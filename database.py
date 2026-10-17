@@ -104,7 +104,6 @@ def create_request(user_id, title, request_text, code):
 def get_user_request(user_id):
     con = connect_db()
     cur = con.cursor()
-    # ВАЖНО: тут знак вопроса ?, а не пустые кавычки
     cur.execute('''
         SELECT r.id, r.title, r.request_text, r.status, r.code, u.user_name
         FROM requests r
@@ -112,10 +111,10 @@ def get_user_request(user_id):
         WHERE r.user_id = ?
     ''', (user_id,))
     
-    rows = cur.fetchall() # Берем ВСЕ заявки
+    rows = cur.fetchall() 
     con.close()
     
-    # Сразу преобразуем в список словарей для удобства
+
     result = []
     for row in rows:
         result.append({
@@ -127,6 +126,14 @@ def get_user_request(user_id):
             "user": row[5]
         })
     return result
+
+
+def request_switch_status(request_id, new_status):
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute('UPDATE requests SET status = ? WHERE id = ?', (new_status, request_id))
+    con.commit()
+    con.close()
 
 
 

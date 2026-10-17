@@ -5,7 +5,8 @@ import uuid
 from flask import Flask, request, make_response, redirect, url_for
 from flask import render_template
 from flask import jsonify
-from database import connect_db, init_db, create_user, get_user_by_token, update_ip_user, create_request, get_user_by_credentials, get_user_request
+from database import connect_db, init_db, create_user, get_user_by_token, update_ip_user, create_request, get_user_by_credentials, get_user_request, request_switch_status
+
 
 
 
@@ -79,6 +80,12 @@ def get_requests_api(user_id):
     
     # Возвращаем данные клиенту в формате JSON
     return jsonify(user_requests)
+
+@app.route("/api/request_switch/<int:request_id>/<new_status>")
+def request_switch(request_id, new_status):
+    request_switch_status(request_id, new_status)
+    return jsonify({"status": "success", "message": "Статус успешно обновлен"})
+    
 
 
 ## РЕГИСТРАЦИЯ, ЛОГИН, ЛОГАУТ

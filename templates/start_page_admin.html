@@ -233,6 +233,47 @@
             display: flex;
             flex-direction: column;
         }
+
+        .dropdown .dropbtn {
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+            font-family: inherit;
+            /* Важно для вертикального выравнивания на мобильных телефонах */
+            margin: 0;
+            /* Важно для вертикального выравнивания на мобильных телефонах */
+        }
+
+       
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a:hover {
+  background-color: #b42727;
+}
+
+        .dropdown-content a {
+            float: none;
+            color: rgb(21, 0, 255);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
     </style>
 </head>
 
@@ -270,7 +311,8 @@
                 <div class="tab-pane">В сети (есть активные обращения):</div>
 
                 {% for device in devices %}
-                <button class="pc-item" data-user-id="{{ device.id }}" onclick="loadRequests('{{ device.id }}', '{{ device.user_name }}')">
+                <button class="pc-item" data-user-id="{{ device.id }}"
+                    onclick="loadRequests('{{ device.id }}', '{{ device.user_name }}')">
                     <h3>ip:{{ device.ip }}</h3>
                     <p>Пользователь:{{ device.user_name }}</p>
                     <p>Кабинет: {{ device.room_num }}</p>
