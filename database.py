@@ -108,7 +108,7 @@ def get_user_request(user_id):
         SELECT r.id, r.title, r.request_text, r.status, r.code, u.user_name
         FROM requests r
         LEFT JOIN accounts u ON r.user_id = u.id
-        WHERE r.user_id = ?
+        WHERE r.user_id = ? AND r.status != 'Готово'
     ''', (user_id,))
     
     rows = cur.fetchall() 

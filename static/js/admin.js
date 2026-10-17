@@ -22,29 +22,28 @@ function loadRequests(userId, userName) {
             }
 
             requests.forEach((req) => {
-                const reqCard = document.createElement("div");
-                reqCard.className = "user_request";
-                reqCard.style.border = "1px solid #ccc";
-                reqCard.style.padding = "10px";
-                reqCard.style.marginBottom = "10px";
-                reqCard.style.borderRadius = "5px";
+                const reqCard = document.createElement('div');
+                reqCard.className = 'request';
 
                 reqCard.innerHTML = `
-                    <h4><strong>#${req.id}</strong>: ${req.title}</h4>
-                    <p><strong>Текст:</strong> ${req.request_text}</p>
-                    <p><strong>Код ошибки:</strong> <code>${req.code || "нет"}</code></p>
-                    <p id="request_status">Статус: <span class="status-badge">${req.status}</span></p>
-                    
+                    <h4>#${req.id}: ${req.title}</h4>
+                    <p class = "code"> Код ошибки: ${req.code || "нет"}</p>
+                    <p>Текст: ${req.request_text}</p>
                     <div class="dropdown">
-                    <button class="dropbtn">Статус: 
+                    <button class="dropbtn" id= "status">Статус: <span class="status-badge">${req.status}</span></button>
                     <i class="fa fa-caret-down"></i>
-                    </button>
-                         <div class="dropdown-content">
+                    <div class="dropdown-content">
                             <button onclick="switch_status('${req.id}', 'В обработке', '${userId}', '${userName}')">В обработке</button>
-                            <button onclick="switch_status('${req.id}', 'В обработке', '${userId}', '${userName}')">В обработке</button>
-                            <button onclick="switch_status('${req.id}', 'В обработке', '${userId}', '${userName}')">В обработке</button>
-                            </div>
+                            <button onclick="switch_status('${req.id}', 'В процессе', '${userId}', '${userName}')">В процессе</button>
+                            <button onclick="switch_status('${req.id}', 'Готово', '${userId}', '${userName}')">Готово</button>
+                        </div>
+                    </div>
+                    
+
+                    
+                        
                 `;
+                
 
                 requestsList.appendChild(reqCard);
             });
@@ -54,6 +53,7 @@ function loadRequests(userId, userName) {
             requestsList.innerHTML =
                 '<p style="color: red;">Не удалось загрузить заявки.</p>';
         });
+        
 }
 
 
@@ -63,4 +63,6 @@ function switch_status(request_id, new_status, user_id, user_name) {
             console.log(data.message);
             loadRequests(user_id, user_name);
         })
+    
 }
+
