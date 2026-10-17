@@ -1,0 +1,92 @@
+<head>
+    <meta charset="UTF-8">
+
+    <title>Startpage</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-startpage.css') }}">
+</head>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style-startpage.css') }}">
+
+<div class="main-container">
+    <h1> Добро пожаловать</h1>
+    <button onclick="document.getElementById('id01').style.display='block'">Регистрация</button>
+    <button onclick="document.getElementById('id02').style.display='block'">Вход {{error}}</button>
+</div>
+
+
+<div id="id02" class="modal">
+    <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Закрыть">x</span>
+    <form class="modal-content" action="/login" method="POST">
+        <div class="container">
+            <h1>Вход в систему</h1>
+            <p>Пожалуйста, введите свои учетные данные.</p>
+            <hr>
+
+            <label for="user_name"><b>Имя пользователя</b></label>
+            <input type="text" placeholder="Введите имя пользователя" name="user_name" required>
+
+            <label for="password"><b>Пароль</b></label>
+            <input type="password" placeholder="Введите пароль" name="password" required>
+
+            <div class="clearfix">
+                <button type="button" onclick="document.getElementById('id02').style.display='none'"
+                    class="cancelbtn">Отменить</button>
+                <button type="submit" class="signup">Войти</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="id01" class="modal">
+    <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Закрыть">x</span>
+    <form class="modal-content" action="/register" method="POST">
+        <div class="container">
+            <h1>Регистрация в сети</h1>
+            <p>Заполните данную форму, чтобы войти в сеть.</p>
+            <hr>
+            <label for="user_name"><b>Имя пользователя</b></label>
+            <input type="text" placeholder="Введите имя пользователя" name="user_name" required>
+
+            <label for="room"><b>Номер кабинета</b></label>
+            <input type="text" placeholder="Введите номер кабинета" name="room" required>
+
+            <label for="password"><b>Пароль</b></label>
+            <input type="text" placeholder="Введите номер кабинета" name="password" required>
+
+
+
+            <div class="role-selector-wrapper">
+                <div class="role-label">Ваша роль в системе:</div>
+
+                <div class="radio-group">
+                    <!-- Вариант 1: Пользователь (выбран по умолчанию через checked) -->
+                    <label class="radio-container">
+                        <input type="radio" name="user_role" value="user" checked>
+                        <span class="custom-radio"></span>
+                        Пользователь
+                    </label>
+
+                    <!-- Вариант 2: Администратор -->
+                    <label class="radio-container">
+                        <input type="radio" name="user_role" value="admin">
+                        <span class="custom-radio"></span>
+                        Админ
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix">
+            <button type="button" onclick="document.getElementById('id01').style.display='none'"
+                class="cancelbtn">Отменить</button>
+            <button type="submit" class="signup">Регистрация</button>
+        </div>
+    </form>
+
+
+
+</div>

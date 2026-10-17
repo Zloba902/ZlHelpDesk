@@ -1,0 +1,137 @@
+
+
+
+:root {
+
+    --bg: #120c16;
+    --rm: #f8f5fc;
+    --wt: #fbf8ff;
+}
+
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('../fonts/Farabee_Straight_Thin.ttf') format('ttf');
+  font-weight: 100;
+
+  font-style: normal;
+  /* Стиль (обычный или курсив) */
+}
+
+body {
+    background-color: var(--bg, #120c16);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+    font-size: 30px;
+    font-family: 'MyCustomFont', sans-serif; /* Применяем кастомный шрифт */
+}
+
+* {
+    box-sizing: border-box
+}
+
+
+input[type=text],
+input[type=password],
+textarea[request_text] {
+    font-family: "MyCustomFont", sans-serif;
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    border-bottom: 5px solid var(--rm);
+    background: var(--bg);
+    color: var(--wt);
+
+}
+
+/* Добавляем фоновый цвет, когда поля ввода в фокусе */
+input[type=text]:focus,
+input[type=password]:focus {
+    background-color: var(--bg);
+    outline: none;
+}
+
+/* Задаем стили для всех кнопок */
+button {
+    font-size: 15px;
+    font-family: "MyCustomFont", sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+button:hover {
+    opacity: 1;
+}
+
+
+
+
+/* Изменяем стили кнопок отмены и регистрации на маленьких экранах */
+@media screen and (max-width: 300px) {
+
+    .cancelbtn,
+    .signupbtn {
+        width: 100%;
+    }
+}
+
+
+
+.side-panel {
+    position: absolute;
+    top: 0;
+    left: -500px;
+    /* Скрыта изначально слева */
+    width: 500px;
+    height: 100%;
+    background: #130e1a;
+    border-right: 2px solid var(--rm);
+    padding: 40px 20px;
+    transition: left 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Класс, который будет добавляться с помощью JS */
+.side-panel.active {
+    left: 0;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-family: "MyCustomFont", sans-serif;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+close-btn {
+    background-color: #f44336;
+    color: rgb(238, 9, 9);
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    align-self: flex-end;
+}
+
+

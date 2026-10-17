@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Startpage</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-user-page.css') }}">
+</head>
+
+<div id="main">
+    <h2>Добро пожаловать!</h2>
+    <p>Это страница пользователя.</p>
+    <button class="sidebar-btn" id="openPanelBtn">Заявка</button>
+    <button class="sidebar-btn" onclick="window.location.href='/logout'">Выйти из учетной записи</button>
+</div>
+
+
+<form class="modal-content" action="/send_request" method="POST">
+    <div class="side-panel" id="infoPanel">
+        
+        <h3>Информация о заявке</h3>
+        <div class="form-group">
+            <label for="title">Тема:</label>
+            <input type="text" placeholder="Введите тему..." name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="request_text">Описание:</label>
+            <textarea rows="5" placeholder="Опишите детали..." name="request_text" required></textarea>
+        </div>
+        <button class="sidebar-btn" style="margin-top: 10px;" type="submit">Отправить</button>
+
+        <button class="close-btn" id="closePanelBtn">✖ Закрыть</button>
+    </div>
+</form>
+
+
+<body>
+    <script>
+        const openBtn = document.getElementById('openPanelBtn');
+        const closeBtn = document.getElementById('closePanelBtn');
+        const panel = document.getElementById('infoPanel');
+
+        // Открыть панель по клике на верхнюю левую кнопку
+        openBtn.addEventListener('click', () => {
+            panel.classList.add('active');
+        });
+
+        // Закрыть панель
+        closeBtn.addEventListener('click', () => {
+            panel.classList.remove('active');
+        });
+    </script>
+</body>
+
+</html>
