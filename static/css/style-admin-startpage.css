@@ -1,13 +1,14 @@
  :root {
-     --bg-dark: #0a0f1d;
-     --panel-bg: #131b2e;
+     --bg-dark: #120c16;
+     --panel-bg: #201627;
+     --request-bg: #372936;
      --text-primary: #f8fafc;
      --text-secondary: #b894b8;
      --cyan-accent: #e838f8;
      --border-color: #1e293b;
  }
 
-  body {
+ body {
      background-color: var(--bg-dark);
      color: var(--text-primary);
      display: flex;
@@ -22,32 +23,9 @@
      margin-top: 15px;
  }
 
- .request {
-     background-color: #ffffff;
-     border: 1px solid #e0e0e0;
-     border-radius: 8px;
-     padding: 20px;
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-     display: flex;
-     flex-direction: column;
-     gap: 10px;
-     position: relative;
- }
 
- .request h4 {
-     margin: 0;
-     font-size: 1.1rem;
-     color: #333333;
-     border-bottom: 1px solid #f0f0f0;
-     padding-bottom: 8px;
- }
 
- .request-card p {
-     margin: 0;
-     font-size: 0.95rem;
-     color: #555555;
-     line-height: 1.4;
- }
+
 
  .code {
      color: #ff0000;
@@ -62,8 +40,6 @@
  }
 
 
-
- /* 1. ЛЕВАЯ ПАНЕЛЬ: Навигация, база знаний, архив */
  .left-sidebar {
      width: 280px;
      background-color: var(--panel-bg);
@@ -74,65 +50,56 @@
  }
 
  .dropdown {
-    align-self: flex-start;
-    position: relative;
-    margin-top: 5px;
-}
+     align-self: flex-start;
+     position: relative;
+     margin-top: 5px;
+ }
 
-/* Кнопка открытия меню */
-.dropbtn {
-    color: white;
-    padding: 8px 14px;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.dropbtn:hover {
-}
-
-#status{
+ /* Кнопка открытия меню */
+ .dropbtn {
+     padding: 8px 14px;
+     font-size: 0.9rem;
+     border: none;
+     border-radius: 4px;
+     cursor: pointer;
+     transition: background-color 0.2s;
+ }
 
 
-}
-/* Контейнер с кнопками выбора (скрыт по умолчанию) */
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #ffffff;
-    min-width: 140px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border-radius: 4px;
-    z-index: 10;
-    margin-top: 2px;
-    overflow: hidden;
-}
+ /* Контейнер с кнопками выбора (скрыт по умолчанию) */
+ .dropdown-content {
+     display: none;
+     position: absolute;
+     background-color: #5b5a5a;
+     min-width: 140px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+     border-radius: 4px;
+     z-index: 10;
+     overflow: hidden;
+ }
 
-/* Показываем меню при наведении на родительский .dropdown */
-.dropdown:hover .dropdown-content {
-    display: block;
-}
+ /* Показываем меню при наведении на родительский .dropdown */
+ .dropdown:hover .dropdown-content {
+     display: block;
+ }
 
-/* Кнопки внутри выпадающего списка */
-.dropdown-content button {
-    color: #333333;
-    padding: 10px 14px;
-    text-align: left;
-    width: 100%;
-    border: none;
-    background: none;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
+ /* Кнопки внутри выпадающего списка */
+ .dropdown-content button {
+     color: #333333;
+     padding: 10px 14px;
+     text-align: left;
+     width: 100%;
+     border: none;
+     font-size: 0.9rem;
+     cursor: pointer;
+     transition: background-color 0.2s;
+ }
 
-.dropdown-content button:hover {
-    background-color: #f8f9fa;
-    color: #007bff;
-}
- 
+ .dropdown-content button:hover {
+     background-color: #000000;
+     color: #8100dd;
+ }
+
 
 
  .left-sidebar a {
@@ -259,23 +226,19 @@
 
  .pc-item {
      background-color: #1e293b;
+     color: var(--text-primary);
      padding: 12px;
-     border-radius: 8px;
-     margin-bottom: 10px;
+     margin: 10px 0px 0px 0px;
      display: flex;
      flex-direction: column;
      align-items: center;
      border-left: 3px solid var(--cyan-accent);
  }
 
- .pc-info h5 {
-     font-size: 14px;
-     margin-bottom: 2px;
- }
 
  .pc-info p {
      font-size: 12px;
-     color: var(--text-secondary);
+     color: var(--text-primary);
  }
 
  .badge-msg {
@@ -306,5 +269,3 @@
      display: flex;
      flex-direction: column;
  }
-
- 

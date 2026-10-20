@@ -1,23 +1,14 @@
 
 import uuid
-
-
 from flask import Flask, request, make_response, redirect, url_for
 from flask import render_template
 from flask import jsonify
-from database import connect_db, init_db, create_user, get_user_by_token, update_ip_user, create_request, get_user_by_credentials, get_user_request, request_switch_status
-
-
-
+from database import connect_db, init_db, create_user, get_user_by_token, update_ip_user, create_request, get_user_by_credentials, get_user_request, request_switch_status, get_knowledge_solutions
 
 app = Flask(__name__)
 init_db()
-print(get_user_request(3))
 
 ## Получаем скисок пользователей и их ип
-
-
-
 
 def registered_devices():
     conn = connect_db()
@@ -35,8 +26,6 @@ def registered_devices():
             "room_num": row[3]
         })
     return registered_device
-
-
 
 ## начальная страница что перекидыват пользователя дальше
 
@@ -62,9 +51,9 @@ def send_request():
 
     request_title = request.form.get("title")
     request_text = request.form.get("request_text")
-    request_code = "200"  # Здесь можно добавить логику для генерации кода запроса
+    request_category = request.form.get("category") # Здесь можно добавить логику для генерации кода запроса
 
-    create_request(user[0], request_title, request_text, request_code)
+    create_request(user[0], request_title, request_text, request_category)
     return redirect(url_for("user_panel"))
 
 
@@ -87,10 +76,15 @@ def request_switch(request_id, new_status):
     return jsonify({"status": "success", "message": "Статус успешно обновлен"})
     
 
+@app.route("/api/get_solution/<category>")
+def get_solution_api(category):
+    solutions_list = get_knowledge_solutions(category) # Вызывает функцию с fetchall()
+    if solutions_list:
+        return jsonify({"status": "success", "data": solutions_list})
+    return jsonify({"status": "not_found"})
+
 
 ## РЕГИСТРАЦИЯ, ЛОГИН, ЛОГАУТ
-
-
 
 
 @app.route("/register", methods=["POST"])
@@ -128,6 +122,7 @@ def login_user():
         con.commit()
         con.close()
         return response
+    return make_response('неправильный логин или пароль', 404)
 
 @app.route("/logout")
 def logout():
@@ -154,12 +149,14 @@ def user_panel():
     if not user:
         return redirect(url_for("home"))
 
+    
     user_ip = request.remote_addr
-
     update_ip_user(user_token, user_ip)
 
-    return render_template("start_page_user.html")
-    return make_response("Неверное имя пользователя или пароль", 401)
+    user_id = user[0]
+    user_requests = get_user_request(user_id)
+
+    return render_template("start_page_user.html", requests=user_requests, user_id = user_id)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

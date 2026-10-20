@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Helpdesk Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-admin-startpage.css') }}">
     
 </head>
@@ -45,9 +46,9 @@
                 {% for device in devices %}
                 <button class="pc-item" data-user-id="{{ device.id }}"
                     onclick="loadRequests('{{ device.id }}', '{{ device.user_name }}')">
-                    <h3>ip:{{ device.ip }}</h3>
-                    <p>Пользователь:{{ device.user_name }}</p>
+                    <h3>Пользователь:{{ device.user_name }}</h3>
                     <p>Кабинет: {{ device.room_num }}</p>
+                    <p>ip:{{ device.ip }}</p>
                 </button>
                 {% endfor %}
             </div>

@@ -27,24 +27,18 @@ function loadRequests(userId, userName) {
 
                 reqCard.innerHTML = `
                     <h4>#${req.id}: ${req.title}</h4>
-                    <p class = "code"> Код ошибки: ${req.code || "нет"}</p>
+                    <p class = "code"> Код ошибки: ${req.category  || "нет"}</p>
                     <p>Текст: ${req.request_text}</p>
                     <div class="dropdown">
-                    <button class="dropbtn" id= "status">Статус: <span class="status-badge">${req.status}</span></button>
+                    <button class="dropbtn  status-${req.status.toLowerCase()}" id= "status">Статус: <span class="status-badge">${req.status}</span></button>
                     <i class="fa fa-caret-down"></i>
                     <div class="dropdown-content">
-                            <button onclick="switch_status('${req.id}', 'В обработке', '${userId}', '${userName}')">В обработке</button>
-                            <button onclick="switch_status('${req.id}', 'В процессе', '${userId}', '${userName}')">В процессе</button>
-                            <button onclick="switch_status('${req.id}', 'Готово', '${userId}', '${userName}')">Готово</button>
+                            <button onclick="switch_status('${req.id}', 'new', '${userId}', '${userName}')">В обработке</button>
+                            <button onclick="switch_status('${req.id}', 'process', '${userId}', '${userName}')">В процессе</button>
+                            <button onclick="switch_status('${req.id}', 'done', '${userId}', '${userName}')">Готово</button>
                         </div>
                     </div>
-                    
-
-                    
-                        
                 `;
-                
-
                 requestsList.appendChild(reqCard);
             });
         })
@@ -53,7 +47,6 @@ function loadRequests(userId, userName) {
             requestsList.innerHTML =
                 '<p style="color: red;">Не удалось загрузить заявки.</p>';
         });
-        
 }
 
 
@@ -63,6 +56,6 @@ function switch_status(request_id, new_status, user_id, user_name) {
             console.log(data.message);
             loadRequests(user_id, user_name);
         })
-    
+
 }
 
