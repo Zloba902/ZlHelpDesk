@@ -1,12 +1,4 @@
- :root {
-     --bg-dark: #120c16;
-     --panel-bg: #201627;
-     --request-bg: #372936;
-     --text-primary: #f8fafc;
-     --text-secondary: #b894b8;
-     --cyan-accent: #e838f8;
-     --border-color: #1e293b;
- }
+
 
  body {
      background-color: var(--bg-dark);
@@ -24,13 +16,10 @@
  }
 
 
+.code {
 
-
-
- .code {
-     color: #ff0000;
- }
-
+    color: var(--aurora-red);
+}
 
  * {
      box-sizing: border-box;
@@ -70,7 +59,7 @@
  .dropdown-content {
      display: none;
      position: absolute;
-     background-color: #5b5a5a;
+     background-color: var(--polar-night-3);
      min-width: 140px;
      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
      border-radius: 4px;
@@ -85,7 +74,8 @@
 
  /* Кнопки внутри выпадающего списка */
  .dropdown-content button {
-     color: #333333;
+     color: var(--text-primary);
+     background-color: black;
      padding: 10px 14px;
      text-align: left;
      width: 100%;
@@ -96,9 +86,9 @@
  }
 
  .dropdown-content button:hover {
-     background-color: #000000;
-     color: #8100dd;
- }
+    background-color: var(--polar-night-1); /* Заменен #000000 */
+    color: var(--aurora-purple); /* Заменен #8100dd */
+}
 
 
 
@@ -113,10 +103,10 @@
      font-size: 14px;
  }
 
- .left-sidebar a:hover {
-     background-color: #1e293b;
-     color: var(--cyan-accent);
- }
+.left-sidebar a:hover {
+    background-color: var(--polar-night-3); /* Заменен #1e293b */
+    color: var(--cyan-accent);
+}
 
  /* 2. ЦЕНТРАЛЬНАЯ ПАНЕЛЬ: Приветствие и статистика */
  .main-dash {
@@ -225,7 +215,7 @@
  }
 
  .pc-item {
-     background-color: #1e293b;
+     background-color: var(--polar-night-3);
      color: var(--text-primary);
      padding: 12px;
      margin: 10px 0px 0px 0px;
@@ -242,8 +232,8 @@
  }
 
  .badge-msg {
-     background-color: #ef4444;
-     color: white;
+     background-color: var(--aurora-red);
+     color: var(--snow-storm-3); 
      font-size: 11px;
      padding: 2px 7px;
      border-radius: 10px;
@@ -253,7 +243,7 @@
 
 
  .tab-btn.active {
-     color: #d90aec;
+     color: var(--aurora-purple);
      /* Голубой цвет как на скрине */
      border-bottom: 2px solid #ff00ea;
      /* Голубая полоска снизу */

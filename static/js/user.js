@@ -32,7 +32,6 @@ closeBtn2.addEventListener('click', () => {
 document.getElementById('category-select').addEventListener('change', function () {
     const category = this.value;
     const solutionBox = document.getElementById('solution-box');
-    const solutionText = document.getElementById('solution-text');
 
     // Если пользователь сбросил выбор на "Выберите проблему", прячем блок
     if (!category) {

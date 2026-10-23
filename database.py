@@ -3,25 +3,30 @@ import sqlite3
 DB_NAME = "helpdesk.db"
 
 ## работа с базой данных пользователей
+
+
+## Подключение базы
 def connect_db():
     con = sqlite3.connect(DB_NAME)
     return con
 
 
-def create_user(token, ip, user_role, user_name, password, room_num):
+## Создание пользователя
+def create_user(login, token, ip, user_role, user_name, password, room_num):
     con = connect_db()
     cur = con.cursor()
     cur.execute(
         '''
-            INSERT INTO accounts (token, ip, user_role, user_name, password, room_num) 
-                VALUES (?, ?, ?, ?,?,?)
+            INSERT INTO accounts ( login,token, ip, user_role, user_name, password, room_num) 
+                VALUES (?,?, ?, ?, ?,?,?)
             ''',
-        (token, ip, user_role, user_name, password, room_num),
+        (login, token, ip, user_role, user_name, password, room_num),
     )
     con.commit()
     con.close()
 
 
+## Вернуть пользователя по токену
 def get_user_by_token(token):
     con = connect_db()
     cur = con.cursor()
@@ -30,11 +35,11 @@ def get_user_by_token(token):
     con.close()
     return user
 
-
-def get_user_by_credentials(user_name, password):
+## Вернуть пользователя по имени и паролю
+def get_user_by_credentials(login, password):
     con = connect_db()
     cur = con.cursor()
-    cur.execute('SELECT * FROM accounts WHERE user_name = ? AND password = ?', (user_name, password))
+    cur.execute('SELECT * FROM accounts WHERE login = ? AND password = ?', (login, password))
     user = cur.fetchone()
     con.close()
     return user
@@ -53,7 +58,8 @@ def init_db():
     cur = con.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS accounts(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        token TEXT UNIQUE,
+        login TEXT UNIQUE NOT NULL,
+        token TEXT,
         ip TEXT,
         user_role TEXT,
         user_name TEXT,
@@ -120,7 +126,7 @@ def get_user_request(user_id):
         SELECT r.id, r.title, r.request_text, r.status, r.category, u.user_name
         FROM requests r
         LEFT JOIN accounts u ON r.user_id = u.id
-        WHERE r.user_id = ? AND r.status != 'Готово'
+        WHERE r.user_id = ? AND r.status != 'done'
     ''', (user_id,))
     
     rows = cur.fetchall() 

@@ -1,13 +1,12 @@
 :root {
-
-  --bg: #120c16;
-  --rm: #f8f5fc;
-  --wt: #fbf8ff;
+  --bg: var(--polar-night-1);
+  --rm: var(--snow-storm-1);
+  --wt: var(--snow-storm-3);
 }
 
 body {
-  background-color: var(--bg, #120c16);
-  color: #ffffff;
+  background-color: var(--bg, var(--polar-night-1));
+  color: var(--snow-storm-3);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,7 +21,6 @@ body {
 * {
   box-sizing: border-box
 }
-
 
 .main-container {
   display: flex;
@@ -39,9 +37,6 @@ body {
   margin-bottom: 30px;
 }
 
-
-
-
 /* Поля ввода на всю ширину */
 input[type=text],
 input[type=password] {
@@ -54,7 +49,6 @@ input[type=password] {
   border-bottom: 5px solid var(--rm);
   background: var(--bg);
   color: var(--wt);
-
 }
 
 /* Добавляем фоновый цвет, когда поля ввода в фокусе */
@@ -68,8 +62,8 @@ input[type=password]:focus {
 button {
   font-size: 15px;
   font-family: "Tiny5", sans-serif;
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--snow-storm-3); /* Заменен #ffffff */
+  color: var(--polar-night-1); /* Заменен #000000 */
   padding: 14px 20px;
   margin: 8px 0;
   border: none;
@@ -85,7 +79,7 @@ button:hover {
 /* Дополнительные стили для кнопки отмены */
 .cancelbtn {
   padding: 14px 20px;
-  background-color: #f44336;
+  background-color: var(--aurora-red); /* Заменен #f44336 */
 }
 
 /* Добавляем обтекание и одинаковую ширину для кнопок отмены и регистрации */
@@ -103,31 +97,23 @@ button:hover {
 /* Модальное окно (фон) */
 .modal {
   display: none;
-  /* По умолчанию скрыто */
   position: fixed;
-  /* Оставаться на месте */
   z-index: 1;
-  /* Поверх всего */
   left: 0;
   top: 0;
   width: 100%;
-  /* На всю ширину */
   height: 100%;
-  /* На всю высоту */
   overflow: auto;
-  /* Разрешить прокрутку при необходимости */
-  background-color: #050505;
+  background-color: var(--polar-night-1); /* Заменен #050505 */
   padding-top: 50px;
 }
 
 /* Модальное окно (содержимое) */
 .modal-content {
-  background-color: #0a020200;
+  background-color: transparent; /* Заменен #0a020200 (прозрачный) */
   margin: 5% auto 15% auto;
-  /* 5% от верха, 15% от низа и по центру */
   border: none;
   width: 70%;
-  /* Может быть меньше или больше в зависимости от размера экрана */
 }
 
 /* Стили горизонтального разделителя */
@@ -143,12 +129,12 @@ hr {
   top: 15px;
   font-size: 40px;
   font-weight: bold;
-  color: #f1f1f1;
+  color: var(--snow-storm-2); /* Заменен #f1f1f1 */
 }
 
 .close:hover,
 .close:focus {
-  color: #f44336;
+  color: var(--aurora-red); /* Заменен #f44336 */
   cursor: pointer;
 }
 
@@ -161,7 +147,6 @@ hr {
 
 /* Изменяем стили кнопок отмены и регистрации на маленьких экранах */
 @media screen and (max-width: 300px) {
-
   .cancelbtn,
   .signupbtn {
     width: 100%;
@@ -170,34 +155,24 @@ hr {
 
 #mySidenav a {
   position: absolute;
-  /* Позиция относительно окна браузера */
   left: -100px;
-  /* Позиция на экране */
   transition: 0.3s;
-  /* Добавляем трансформацию при наведении */
   padding: 15px;
-  /* Отступы 15px */
   width: 120px;
-  /* Задаем ширину */
   text-decoration: none;
-  /* Убираем подчеркивание */
   font-size: 20px;
-  /* Размер шрифта */
-  color: rgb(5, 5, 5);
-  /* Белый цвет текста */
+  color: var(--polar-night-1); /* Заменен rgb(5, 5, 5) */
   border-radius: 0 5px 5px 0;
-  /* Закругленные углы в верхней и нижней части справа */
 }
 
 #mySidenav a:hover {
   left: 0;
-  /* При наведении курсора элементы выезжают на всю ширину */
 }
 
 /* Ссылка "О нас": 20px от верха, зеленый фон */
 #about {
   top: 20px;
-  background-color: #04AA6D;
+  background-color: var(--aurora-green); /* Заменен #04AA6D */
 }
 
 #hower1,
@@ -206,7 +181,6 @@ hr {
 #hower4 {
   color: var(--bg);
   background-color: var(--wt);
-
 }
 
 #hower1 {

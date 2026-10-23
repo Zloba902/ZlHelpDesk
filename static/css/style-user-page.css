@@ -1,25 +1,14 @@
-
-
-
 :root {
-
-    --bg: #120c16;
-    --rm: #f8f5fc;
-    --wt: #fbf8ff;
+    --bg: var(--polar-night-1);
+    --rm: var(--snow-storm-1);
+    --wt: var(--snow-storm-3);
 }
 
-@font-face {
-  font-family: 'MyCustomFont';
-  src: url('../fonts/Farabee_Straight_Thin.ttf') format('ttf');
-  font-weight: 100;
 
-  font-style: normal;
-  /* Стиль (обычный или курсив) */
-}
 
 body {
-    background-color: var(--bg, #120c16);
-    color: #ffffff;
+    background-color: var(--bg);
+    color: var(--text-primary);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -29,7 +18,7 @@ body {
     box-sizing: border-box;
     position: relative;
     font-size: 30px;
-    font-family: 'MyCustomFont', sans-serif; /* Применяем кастомный шрифт */
+    font-family: 'MyCustomFont';
 }
 
 * {
@@ -40,7 +29,7 @@ body {
 input[type=text],
 input[type=password],
 textarea[request_text] {
-    font-family: "MyCustomFont", sans-serif;
+    font-family: "MyCustomFont";
     width: 100%;
     padding: 15px;
     margin: 5px 0 22px 0;
@@ -63,8 +52,10 @@ input[type=password]:focus {
 button {
     font-size: 15px;
     font-family: "MyCustomFont", sans-serif;
-    background-color: #ffffff;
-    color: #000000;
+    background-color: var(--snow-storm-3);
+    /* Заменен #ffffff */
+    color: var(--polar-night-1);
+    /* Заменен #000000 */
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
@@ -89,8 +80,6 @@ button:hover {
     }
 }
 
-
-
 .side-panel {
     position: absolute;
     top: 0;
@@ -98,7 +87,7 @@ button:hover {
     /* Скрыта изначально слева */
     width: 500px;
     height: 100%;
-    background: #130e1a;
+    background: var(--polar-night-1); /* Заменен #130e1a */
     border-right: 2px solid var(--rm);
     padding: 40px 20px;
     transition: left 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
@@ -113,7 +102,7 @@ button:hover {
     left: 0;
 }
 
-.form-group{
+.form-group {
     display: flex;
     flex-direction: column;
 }
@@ -125,8 +114,8 @@ label {
 }
 
 close-btn {
-    background-color: #f44336;
-    color: rgb(238, 9, 9);
+     background-color: var(--aurora-red); /* Заменен #f44336 */
+    color: var(--snow-storm-3); /* Заменен rgb(238, 9, 9) */
     border: none;
     padding: 10px 20px;
     cursor: pointer;
@@ -135,9 +124,9 @@ close-btn {
 }
 
 
- #solution-box {
-     display: flex;
-     flex-direction: column;
-     gap: 15px;
-     margin-top: 15px;
- }
+#solution-box {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}

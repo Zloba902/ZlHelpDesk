@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-startpage.css') }}">
 </head>
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style-startpage.css') }}">
 
 <div class="main-container">
@@ -25,9 +25,12 @@
             <h1>Вход в систему</h1>
             <p>Пожалуйста, введите свои учетные данные.</p>
             <hr>
+            
 
-            <label for="user_name"><b>Имя пользователя</b></label>
-            <input type="text" placeholder="Введите имя пользователя" name="user_name" required>
+        
+
+            <label for="login"><b>Логин</b></label>
+            <input type="text" placeholder="Введите логин" name="login" required>
 
             <label for="password"><b>Пароль</b></label>
             <input type="password" placeholder="Введите пароль" name="password" required>
@@ -53,6 +56,9 @@
 
             <label for="room"><b>Номер кабинета</b></label>
             <input type="text" placeholder="Введите номер кабинета" name="room" required>
+
+            <label for="login"><b>Логин</b></label>
+            <input type="text" placeholder="Введите номер кабинета" name="login" required>
 
             <label for="password"><b>Пароль</b></label>
             <input type="text" placeholder="Введите номер кабинета" name="password" required>

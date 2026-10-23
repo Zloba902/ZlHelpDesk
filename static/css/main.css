@@ -1,44 +1,98 @@
+:root {
+    /* --- Polar Night (Темные фоны и границы) --- */
+    --polar-night-1: #2e3440;
+    --polar-night-2: #3b4252;
+    --polar-night-3: #434c5e;
+    --polar-night-4: #4c566a;
+
+    /* --- Snow Storm (Светлый текст и фоны) --- */
+    --snow-storm-1: #d8dee9;
+    --snow-storm-2: #e5e9f0;
+    --snow-storm-3: #eceff4;
+
+    /* --- Frost (Акценты, ссылки, кнопки) --- */
+    --frost-1: #8fbcbb;
+    --frost-2: #88c0d0;
+    --frost-3: #81a1c1;
+    --frost-4: #5e81ac;
+
+    /* --- Aurora (Статусы и ошибки) --- */
+    --aurora-red: #bf616a;
+    --aurora-orange: #d08770;
+    --aurora-yellow: #ebcb8b;
+    --aurora-green: #a3be8c;
+    --aurora-purple: #b48ead;
+
+    /* --- Семантические переменные (Маппинг) --- */
+    
+    /* Фоны */
+    --bg-dark: var(--polar-night-1);
+    --panel-bg: var(--polar-night-2);
+    --border-color: var(--polar-night-3);
+    --border-light: var(--polar-night-4);
+    --border-subtle: var(--polar-night-3);
+  
+
+    /* Текст */
+    --text-primary: var(--snow-storm-3);
+    --text-secondary: var(--snow-storm-2);
+    --text-muted: var(--snow-storm-1);
+
+    /* Акценты */
+    --accent-alt: var(--frost-2);
+    --cyan-accent: var(--frost-2);
+
+    /* Статусы (на основе Aurora) */
+    --status-new-bg: var(--aurora-purple);
+    --status-new-text: var(--snow-storm-3);
+    
+    --status-process-bg: var(--aurora-yellow);
+    --status-process-text: var(--polar-night-1);
+    
+    --status-done-bg: var(--aurora-green);
+    --status-done-text: var(--polar-night-1);
+}
+
+
 .request {
-     background-color: var(--request-bg);
-     border: 1px solid #e0e0e0;
-     border-radius: 8px;
-     padding: 20px;
-     display: flex;
-     flex-direction: column;
-     gap: 10px;
-     position: relative;
- }
-
-  .request h4,
-  .solotion h4 {
-     margin: 0;
-     font-size: 1.1rem;
-     color: #b300ff;
-     border-bottom: 1px solid #f0f0f0;
-     padding-bottom: 8px;
- }
-
-  .request p,
-  .solotion p {
-     margin: 0;
-     font-size: 12px;
-     color: #555555;
-     line-height: 1.4;
- }
-
- .status-new {
-    background-color: #4e3d5b47;
-    color: #e71313;
+    background-color: var(--polar-night-2);
+    border: 1px solid var(--polar-night-4);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
 }
 
-/* Если статус process — красим в желтый */
+.request h4,
+.solotion h4 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--accent-alt);
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 8px;
+}
+
+.request p,
+.solotion p {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.status-new {
+    background-color: var(--status-new-bg);
+    color: var(--status-new-text);
+}
+
 .status-process {
-    background-color: #4c463234;
-    color: #ffe600;
+    background-color: var(--status-process-bg);
+    color: var(--status-process-text);
 }
 
-/* Если статус done — красим в зеленый */
 .status-done {
-    background-color: #2d403835;
-    color: #37ff00;
+    background-color: var(--status-done-bg);
+    color: var(--status-done-text);
 }
