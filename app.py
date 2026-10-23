@@ -89,6 +89,7 @@ def get_solution_api(category):
 
 @app.route("/register", methods=["POST"])
 def register_user():
+    login = request.form.get("login")
     name = request.form.get("user_name")
     room = request.form.get("room")
     user_ip = request.remote_addr
@@ -96,7 +97,15 @@ def register_user():
     user_role = request.form.get("user_role")
     password = request.form.get("password")
 
-    create_user(user_token, user_ip, user_role ,name, password ,room)
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute("SELECT id FROM accounts WHERE login = ?", (login,))
+    if cur.fetchone():
+        con.close()
+        return make_response("Пользователь с таким логином уже существует", 400)
+    con.close()
+
+    create_user(login, user_token, user_ip, user_role ,name, password ,room)
     response = make_response(redirect(url_for('admin_panel' if user_role == 'admin' else 'user_panel')))
     response.set_cookie("user_token", user_token, max_age=60*60*24*365)
     
@@ -104,21 +113,20 @@ def register_user():
 
 @app.route("/login", methods=["POST"])
 def login_user():
-    user_name = request.form.get("user_name")
+    login = request.form.get("login")
     password = request.form.get("password")
-    print("Проверка" ,user_name, password)
     
-    user = get_user_by_credentials(user_name, password)
+    user = get_user_by_credentials(login, password)
     user_token = str(uuid.uuid4())
-    print("DEBUG user =", user)
 
     if user:
-        response = make_response(redirect(url_for('admin_panel' if user[3] == 'admin' else 'user_panel')))
+        print(user[4])
+        response = make_response(redirect(url_for('admin_panel' if user[4] == 'admin' else 'user_panel')))
         response.set_cookie("user_token", user_token, max_age=60*60*24*365)
         con = connect_db()
         cur = con.cursor()
         # Предполагаем, что первое поле (user[0]) — это id или имя пользователя
-        cur.execute('UPDATE accounts SET token = ? WHERE user_name = ?', (user_token, user_name))
+        cur.execute('UPDATE accounts SET token = ? WHERE id = ?', (user_token, user[0]))
         con.commit()
         con.close()
         return response
@@ -136,10 +144,10 @@ def logout():
 def admin_panel():
     user_token = request.cookies.get("user_token")
     user = get_user_by_token(user_token)
-    if not user or user[3] != "admin":
+    if not user or user[4] != "admin":
         return redirect(url_for("home"))
 
-    return render_template("start_page_admin.html", devices=registered_devices(), name = user[4])
+    return render_template("start_page_admin.html", devices=registered_devices(), name = user[5])
 
 
 @app.route("/user")
