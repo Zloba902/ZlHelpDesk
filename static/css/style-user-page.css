@@ -87,7 +87,8 @@ button:hover {
     /* Скрыта изначально слева */
     width: 500px;
     height: 100%;
-    background: var(--polar-night-1); /* Заменен #130e1a */
+    background: var(--polar-night-1);
+    /* Заменен #130e1a */
     border-right: 2px solid var(--rm);
     padding: 40px 20px;
     transition: left 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
@@ -114,8 +115,10 @@ label {
 }
 
 close-btn {
-     background-color: var(--aurora-red); /* Заменен #f44336 */
-    color: var(--snow-storm-3); /* Заменен rgb(238, 9, 9) */
+    background-color: var(--aurora-red);
+    /* Заменен #f44336 */
+    color: var(--snow-storm-3);
+    /* Заменен rgb(238, 9, 9) */
     border: none;
     padding: 10px 20px;
     cursor: pointer;
@@ -125,8 +128,23 @@ close-btn {
 
 
 #solution-box {
+    position: absolute;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-top: 10px;
+
+    width: 700px;;
+
+    border: 2px solid var(--rm);
+    border-top: none;
+    background: var(--polar-night-1);
+    top: -100%;
+    left: 500px;
+
+
+    transition: top 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
+}
+
+#solution-box.active {
+    top:0px;
+ 
 }
