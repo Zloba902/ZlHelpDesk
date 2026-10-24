@@ -154,6 +154,34 @@ def request_switch_status(request_id, new_status):
     con.close()
 
 
+def get_users_with_active_requests():
+    con = connect_db()
+    cursor = con.cursor()
+
+   
+    cursor.execute('''
+        SELECT DISTINCT a.id, a.ip, a.user_name, a.room_num, count(a.id)
+        FROM accounts a
+        INNER JOIN requests r ON a.id = r.user_id
+        WHERE r.status != 'done'
+        Group BY a.id ;
+    ''')
+    
+    rows = cursor.fetchall()
+    con.close()
+    
+    active_users = []
+    for row in rows:
+        active_users.append({
+            "id": row[0],
+            "ip": row[1],
+            "user_name": row[2],
+            "room_num": row[3],
+            "count": row[4],
+        })
+    return active_users
+
+
 
 #КОМАНДЫ ДЛЯ РАБОТЫ С БД ЧАТА
 def save_message(id_sender, id_reciev, text, msg_type='text'):

@@ -7,7 +7,7 @@
     <title>Helpdesk Admin</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-admin-startpage.css') }}">
-    
+
 </head>
 
 <body>
@@ -46,11 +46,16 @@
                 {% for device in devices %}
                 <button class="pc-item" data-user-id="{{ device.id }}"
                     onclick="loadRequests('{{ device.id }}', '{{ device.user_name }}')">
+
                     <h3>Пользователь:{{ device.user_name }}</h3>
                     <p>Кабинет: {{ device.room_num }}</p>
                     <p>ip:{{ device.ip }}</p>
+                    <span class="badge"> {{device.count}} </span>
+
                 </button>
                 {% endfor %}
+
+
             </div>
 
 

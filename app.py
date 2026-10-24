@@ -3,7 +3,7 @@ import uuid
 from flask import Flask, request, make_response, redirect, url_for
 from flask import render_template
 from flask import jsonify
-from database import connect_db, init_db, create_user, get_user_by_token, update_ip_user, create_request, get_user_by_credentials, get_user_request, request_switch_status, get_knowledge_solutions
+from database import connect_db, init_db, create_user, get_user_by_token, update_ip_user, create_request, get_user_by_credentials, get_user_request, request_switch_status, get_knowledge_solutions, get_users_with_active_requests
 
 app = Flask(__name__)
 init_db()
@@ -146,8 +146,9 @@ def admin_panel():
     user = get_user_by_token(user_token)
     if not user or user[4] != "admin":
         return redirect(url_for("home"))
+        
 
-    return render_template("start_page_admin.html", devices=registered_devices(), name = user[5])
+    return render_template("start_page_admin.html", devices=get_users_with_active_requests(), name=user[5])
 
 
 @app.route("/user")
