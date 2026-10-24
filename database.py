@@ -92,12 +92,14 @@ def init_db():
 
     cur.execute('''
         CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        id_sender INTEGER NOT NULL,
-        id_reciev INTEGER NOT NULL,
-        message_text TEXT NOT NULL,
-        message_type TEXT DEFAULT 'text',
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        request_id INTEGER NOT NULL,          
+        id_sender INTEGER NOT NULL,           
+        id_reciev INTEGER NOT NULL,           
+        message_text TEXT NOT NULL,          
+        message_type TEXT DEFAULT 'text',     
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (request_id) REFERENCES requests(id)
         )
     ''')
     
@@ -105,6 +107,7 @@ def init_db():
     con.close()
 
 ##База данных заявок
+
 
 def create_request(user_id, title, request_text, category):
     con = connect_db()
@@ -181,53 +184,13 @@ def get_users_with_active_requests():
         })
     return active_users
 
-
-
-#КОМАНДЫ ДЛЯ РАБОТЫ С БД ЧАТА
-def save_message(id_sender, id_reciev, text, msg_type='text'):
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO messages (id_sender, id_reciev, message_text, message_type)
-        VALUES (?, ?, ?, ?)
-    ''', (id_sender, id_reciev, text, msg_type))
-    conn.commit()
-    conn.close()
-
-def get_history_chat(user_id, admin_id):
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT id, sender_id, receiver_id, message_text, message_type, timestamp 
-        FROM messages 
-        WHERE (sender_id = ? AND receiver_id = ?) 
-        OR (sender_id = ? AND receiver_id = ?)
-        ORDER BY timestamp ASC
-    ''', (user_id, admin_id, admin_id, user_id))
-    
-    rows = cursor.fetchall()
-    conn.close()
-    
-    history = []
-    for row in rows:
-        history.append({
-            "id": row[0],
-            "sender_id": row[1],
-            "receiver_id": row[2],
-            "text": row[3],
-            "type": row[4],
-            "timestamp": row[5]
-        })
-    return history
-
-
 def get_knowledge_solutions(category):
     if not category:
         return []
 
     con = connect_db()
     cur = con.cursor()
-    # Ищем решение по текстовому идентификатору (например, 'printer')
+
     cur.execute('''
         SELECT category_title, content 
         FROM knowledge_base 
@@ -243,4 +206,42 @@ def get_knowledge_solutions(category):
             "title": row[0],
             "solution": row[1]
         })
-    return solotions
+    return solotions    
+
+
+
+#КОМАНДЫ ДЛЯ РАБОТЫ С БД ЧАТА
+
+def save_request_message(request_id, id_sender, id_reciev, text):
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute('''
+        INSERT INTO messages (request_id, id_sender, id_reciev, message_text)
+        VALUES (?, ?, ?, ?)
+    ''', (request_id, id_sender, id_reciev, text))
+    con.commit()
+    con.close()
+
+def get_request_chat_history(request_id):
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute('''
+        SELECT id_sender, message_text, timestamp 
+        FROM messages 
+        WHERE request_id = ?
+        ORDER BY timestamp ASC
+    ''', (request_id,))
+    
+    rows = cur.fetchall()
+    con.close()
+    
+    history = []
+    for row in rows:
+        history.append({
+            "sender_id": row[0],
+            "text": row[1],
+            "timestamp": row[2]
+        })
+    return history
+
+

@@ -24,14 +24,14 @@
     --aurora-purple: #b48ead;
 
     /* --- Семантические переменные (Маппинг) --- */
-    
+
     /* Фоны */
     --bg-dark: var(--polar-night-1);
     --panel-bg: var(--polar-night-2);
     --border-color: var(--polar-night-3);
     --border-light: var(--polar-night-4);
     --border-subtle: var(--polar-night-3);
-  
+
 
     /* Текст */
     --text-primary: var(--snow-storm-3);
@@ -45,10 +45,10 @@
     /* Статусы (на основе Aurora) */
     --status-new-bg: var(--aurora-purple);
     --status-new-text: var(--snow-storm-3);
-    
+
     --status-process-bg: var(--aurora-yellow);
     --status-process-text: var(--polar-night-1);
-    
+
     --status-done-bg: var(--aurora-green);
     --status-done-text: var(--polar-night-1);
 }
@@ -82,7 +82,7 @@
     line-height: 1.4;
 }
 
-.solotion{
+.solotion {
     margin: 25px 10px 10px 25px;
 
 }
@@ -101,3 +101,63 @@
     background-color: var(--status-done-bg);
     color: var(--status-done-text);
 }
+
+
+
+.chat-button {
+    background-color: var(--aurora-green);
+    padding: 5px;
+}
+
+.chat-window {}
+
+.chat-window .title {
+    padding-left: 10px;
+    font-size: 20px;
+    color: var(--aurora-orange);
+    margin-bottom: 15px
+}
+
+.chat-window .chat-header {
+    font-size: 23px;
+    color: var(--aurora-purple);
+    margin-bottom: 10px;
+    padding: 7px;
+}
+
+.chat-window #chat-messages-box {
+    flex: 1;
+    min-height: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    background: var(--polar-night-3);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.message-box {
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 80%;
+}
+
+.message {
+    color: var(--polar-night-1);
+    margin: 0;
+    font-size: 16px;
+}
+
+.message-date {
+    font-size: 9px;
+    color: var(--aurora-red);
+    display: block;
+    text-align: right;
+    margin-top: 3px;
+
+}
+

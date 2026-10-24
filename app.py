@@ -3,7 +3,7 @@ import uuid
 from flask import Flask, request, make_response, redirect, url_for
 from flask import render_template
 from flask import jsonify
-from database import connect_db, init_db, create_user, get_user_by_token, update_ip_user, create_request, get_user_by_credentials, get_user_request, request_switch_status, get_knowledge_solutions, get_users_with_active_requests
+from database import connect_db, init_db, create_user, get_user_by_token, update_ip_user, create_request, get_user_by_credentials, get_user_request, request_switch_status, get_knowledge_solutions, get_users_with_active_requests, save_request_message, get_request_chat_history
 
 app = Flask(__name__)
 init_db()
@@ -57,17 +57,11 @@ def send_request():
     return redirect(url_for("user_panel"))
 
 
-
+## РОУТЫ
 
 @app.route("/api/user_requests/<int:user_id>")
 def get_requests_api(user_id):
-    # Дополнительно: здесь можно проверить user_token на права админа,
-    # если это закрытая админ-панель
-    
-    # Вызываем твою функцию получения списка словарей из БД
     user_requests = get_user_request(user_id) 
-    
-    # Возвращаем данные клиенту в формате JSON
     return jsonify(user_requests)
 
 @app.route("/api/request_switch/<int:request_id>/<new_status>")
@@ -82,6 +76,24 @@ def get_solution_api(category):
     if solutions_list:
         return jsonify({"status": "success", "data": solutions_list})
     return jsonify({"status": "not_found"})
+
+@app.route("/api/get_chat/<int:request_id>")
+def get_chat(request_id):
+    history = get_request_chat_history(request_id)
+    return jsonify({"status": "success", "history": history})
+
+@app.route("/api/send_chat_message", methods=["POST"])
+def send_chat_message():
+    data = request.json # Принимаем JSON от JavaScript
+    
+    request_id = data.get("request_id")
+    id_sender = data.get("sender_id")
+    id_reciev = data.get("receiver_id")
+    message_text = data.get("text")
+    
+    save_request_message(request_id, id_sender, id_reciev, message_text)
+    return jsonify({"status": "success"})
+
 
 
 ## РЕГИСТРАЦИЯ, ЛОГИН, ЛОГАУТ
@@ -146,9 +158,12 @@ def admin_panel():
     user = get_user_by_token(user_token)
     if not user or user[4] != "admin":
         return redirect(url_for("home"))
-        
 
-    return render_template("start_page_admin.html", devices=get_users_with_active_requests(), name=user[5])
+
+    return render_template("start_page_admin.html",
+                            devices=get_users_with_active_requests(),
+                            name=user[5],
+                            admin_id = user[0])
 
 
 @app.route("/user")

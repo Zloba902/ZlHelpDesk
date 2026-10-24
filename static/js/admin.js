@@ -27,7 +27,7 @@ function loadRequests(userId, userName) {
 
                 reqCard.innerHTML = `
                     <h4>#${req.id}: ${req.title}</h4>
-                    <p class = "code"> Код ошибки: ${req.category  || "нет"}</p>
+                    <p class = "code"> Код ошибки: ${req.category || "нет"}</p>
                     <p>Текст: ${req.request_text}</p>
                     <div class="dropdown">
                     <button class="dropbtn  status-${req.status.toLowerCase()}" id= "status">Статус: <span class="status-badge">${req.status}</span></button>
@@ -38,6 +38,11 @@ function loadRequests(userId, userName) {
                             <button onclick="switch_status('${req.id}', 'done', '${userId}', '${userName}')">Готово</button>
                         </div>
                     </div>
+
+                    <button class="chat-button" 
+                    onclick="openTicketChat('${req.id}', '${userId}', '${userName}', '${req.title}')">
+                    Чат по заявке
+                    </button>
                 `;
                 requestsList.appendChild(reqCard);
             });
@@ -59,3 +64,94 @@ function switch_status(request_id, new_status, user_id, user_name) {
 
 }
 
+let chatInterval = null
+
+function openTicketChat(requestId, userId, userName, requestTitle) {
+
+    const chatTabBtn = document.querySelector('.tab-btn[onclick*="chat"]') || document.querySelectorAll('.tab-btn')[1];
+    if (chatTabBtn) chatTabBtn.click(); 
+
+    // 2. Инициализируем контейнер чата в правой панели
+    const rightContent = document.querySelector('#tab-chat'); // Твой контейнер правой панели
+    rightContent.innerHTML = `
+    <div class = "chat-window">
+        <h4 class="chat-header">Чат по заявке #${requestId}</h4>
+        <p class="title">Тема: ${requestTitle}</p>
+        
+        <div id="chat-messages-box" style="">
+            <p style="color: gray; text-align: center;">Загрузка истории...</p>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="chat-input-text" placeholder="Напишите ответ..." style="margin: 0; padding: 10px; border-radius: 4px;">
+            <button class="dropbtn" id="send-chat-btn" style="width: auto; background: var(--accent); color: white;">Отправить</button>
+        </div>
+    </div>
+    `;
+
+    // 3. Функция загрузки сообщений с сервера
+    function loadChatHistory() {
+        fetch(`/api/get_chat/${requestId}`)
+            .then(response => response.json())
+            .then(res => {
+                const msgBox = document.getElementById('chat-messages-box');
+                if (!msgBox) return; 
+                
+                msgBox.innerHTML = '';
+                if (res.history.length === 0) {
+                    msgBox.innerHTML = '<p style="color: gray; text-align: center; font-size: 12px;">Сообщений пока нет</p>';
+                    return;
+                }
+
+                res.history.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = "message-box"
+                    
+                    //Выравниваем по братику
+                    const isAdmin = (msg.sender_id === currentAdminId); 
+                    
+                    messageDiv.style.alignSelf = isAdmin ? 'flex-end' : 'flex-start';
+                    messageDiv.style.background = isAdmin ? 'var(--frost-1)' : 'var(--frost-4)';
+                 
+                    
+                    messageDiv.innerHTML = `
+                        <p class="message" >${msg.text}</p>
+                        <span class="message-date" >${msg.timestamp.split(' ')[1] || ''}</span>
+                    `;
+                    msgBox.appendChild(messageDiv);
+                });
+                
+                msgBox.scrollTop = msgBox.scrollHeight;
+            });
+    }
+    loadChatHistory();
+
+    
+    if (chatInterval) clearInterval(chatInterval);
+    chatInterval = setInterval(loadChatHistory, 3000); 
+
+ 
+    document.getElementById('send-chat-btn').onclick = function() {
+        const input = document.getElementById('chat-input-text');
+        const text = input.value.trim();
+        if (!text) return;
+
+        fetch('/api/send_chat_message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                request_id: requestId,
+                sender_id: currentAdminId, // Твой ID админа из сессии/кук (или передавай правильный)
+                receiver_id: userId, // ID пользователя, которому отвечаем
+                text: text
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                input.value = ''; // Очищаем поле ввода
+                loadChatHistory(); // Сразу обновляем экран, не дожидаясь таймера
+            }
+        });
+    };
+}
