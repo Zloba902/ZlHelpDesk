@@ -69,7 +69,7 @@ button:hover {
 .side-panel {
     position: absolute;
     top: 0;
-    left: -500px;
+    left: 0px;
     /* Скрыта изначально слева */
     width: 500px;
     height: 100%;
@@ -81,12 +81,12 @@ button:hover {
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    z-index: 10;
 }
 
 /* Класс, который будет добавляться с помощью JS */
 .side-panel.active {
-    left: 0;
+    left: 500px;
 }
 
 .form-group {
@@ -118,15 +118,15 @@ close-btn {
     display: flex;
     flex-direction: column;
 
-    width: 700px;;
+    width: 500px;;
 
     border: 2px solid var(--rm);
     border-top: none;
     background: var(--polar-night-1);
     top: -100%;
-    left: 500px;
+    left: 1000px;
 
-
+    z-index: 120;
     transition: top 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
 }
 
@@ -141,3 +141,31 @@ close-btn {
 
 }
 
+
+ .right-sidebar {
+     width: 340px;
+     background-color: var(--panel-bg);
+     border-left: 1px solid var(--border-color);
+     display: flex;
+     flex-direction: column;
+ }
+
+ .left-sidebar {
+     width: 500px;
+     position: relative;
+     background-color: var(--panel-bg);
+     border-right: 1px solid var(--border-color);
+     display: flex;
+     flex-direction: column;
+     padding: 20px;
+     z-index: 100;
+ }
+
+
+  .main-dash {
+     flex: 1;
+     padding: 0px;
+     display: flex;
+     flex-direction: column;
+     justify-content: flex-start;
+ }
