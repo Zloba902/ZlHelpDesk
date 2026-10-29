@@ -14,81 +14,95 @@
 </head>
 
 <body>
-
-    <div id="main">
+   <div class="left-sidebar">
+     <div id="main">
         <h2>Добро пожаловать!</h2>
         <p>Это страница пользователя.</p>
         <button class="sidebar-btn" id="openPanelBtn2"> Ваши заявки </button>
         <button class="sidebar-btn" id="openPanelBtn">Новая заявка</button>
         <button class="sidebar-btn" onclick="window.location.href='/logout'">Выйти из учетной записи</button>
     </div>
-
-
-    <form class="modal-content" action="/send_request" method="POST">
-        <div class="side-panel" id="infoPanel">
-            <h3>Информация о заявке (опишите проблему)</h3>
-            <div class="form-group">
-                <label for="title">Тема:</label>
-                <input type="text" placeholder="Введите тему..." name="title" required>
-            </div>
-            <div class="form-group">
-                <label for="request_text">Описание:</label>
-                <textarea rows="5" placeholder="Опишите детали..." name="request_text" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="category">Категория:</label>
-                <select name="category" id="category-select">
-                    <option value="">Выберите проблему</option>
-                    <option value="internet">Проблема с сетью</option>
-                    <option value="printer">Проблема с принтером</option>
-                    <option value="password">Проблема со входом в сеть</option>
-                </select>
-            </div>
-
-
-
-            <button class="sidebar-btn" style="margin-top: 10px;" type="submit">Отправить</button>
-            <button class="close-btn" id="closePanelBtn" type="button">✖ Закрыть</button>
-        </div>
-    </form>
-
-    <div id="solution-box">
-
     </div>
 
+    <div class=" main-dash">
+        <form class="modal-content" action="/send_request" method="POST">
+            <div class="side-panel" id="infoPanel">
+                <h3>Информация о заявке (опишите проблему)</h3>
+                <div class="form-group">
+                    <label for="title">Тема:</label>
+                    <input type="text" placeholder="Введите тему..." name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="request_text">Описание:</label>
+                    <textarea rows="5" placeholder="Опишите детали..." name="request_text" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="category">Категория:</label>
+                    <select name="category" id="category-select">
+                        <option value="">Выберите проблему</option>
+                        <option value="internet">Проблема с сетью</option>
+                        <option value="printer">Проблема с принтером</option>
+                        <option value="password">Проблема со входом в сеть</option>
+                    </select>
+                </div>
 
-    <div class="side-panel" id="Panelrequests">
-        <h3>Ваши заявки</h3>
-        {% if requests %}
-        {% for req in requests %}
-        <div class="request">
-            <h4>#{{ req.id }}: {{ req.title }}</h4>
-            <p>Описание проблемы: {{ req.request_text }}</p>
-            <p>Категория: {{ req.category if req.category else 'не выбрана' }}</p>
 
 
-            <p>Статус:
-                <span class="status-badge status-{{ req.status | lower }}">
-                    {{ req.status }}
-                </span>
-            </p>
-            <span class="request-date">{{ req.timestamp }}</span>
-            <button class="sidebar-btn" style="margin-top: 10px;"
-                onclick="openUserTicketChat('{{ req.id }}', '{{ user_id }}', '{{ req.title }}')">
-                💬 Чат по заявке
-            </button>
+                <button class="sidebar-btn" style="margin-top: 10px;" type="submit">Отправить</button>
+                <button class="close-btn" id="closePanelBtn" type="button">✖ Закрыть</button>
+            </div>
+        </form>
+
+        <div id="solution-box">
+
         </div>
-        {% endfor %}
-        {% else %}
-        <p class="no-requests">Вы еще не отправляли ни одной заявки.</p>
-        {% endif %}
-        <button class="close-btn" id="closePanelBtn2">✖ Закрыть</button>
+
+
+        <div class="side-panel" id="Panelrequests">
+            <h3>Ваши заявки</h3>
+            {% if requests %}
+            {% for req in requests %}
+            <div class="request">
+                <h4>#{{ req.id }}: {{ req.title }}</h4>
+                <p>Описание проблемы: {{ req.request_text }}</p>
+                <p>Категория: {{ req.category if req.category else 'не выбрана' }}</p>
+
+
+                <p>Статус:
+                    <span class="status-badge status-{{ req.status | lower }}">
+                        {{ req.status }}
+                    </span>
+                </p>
+                <span class="request-date">{{ req.timestamp }}</span>
+                <button class="sidebar-btn" style="margin-top: 10px;"
+                    onclick="openTicketChat('{{ req.id }}', '{{ user_id }}', '{{ req.title }}')">
+                    💬 Чат по заявке
+                </button>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="no-requests">Вы еще не отправляли ни одной заявки.</p>
+            {% endif %}
+            <button class="close-btn" id="closePanelBtn2">✖ Закрыть</button>
+        </div>
     </div>
 
+    
+
+    <div class="right-sidebar">
+        <div id="tab-chat">
+
+
+
+        </div>
+    </div>
 
 
 
     <script src="/static/js/user.js"></script>
+
+    <script src="/static/js/admin.js"></script>
+
 
 
 </body>

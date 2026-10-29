@@ -4,26 +4,15 @@
     --wt: var(--snow-storm-3);
 }
 
-
-
 body {
-    background-color: var(--bg);
-    color: var(--text-primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    flex-direction: column;
-    box-sizing: border-box;
-    position: relative;
-    font-size: 30px;
-    font-family: 'MyCustomFont';
+     background-color: var(--bg-dark);
+     color: var(--text-primary);
+     display: flex;
+     height: 100vh;
+     overflow: hidden;
 }
 
-* {
-    box-sizing: border-box
-}
+
 
 
 input[type=text],
@@ -67,9 +56,6 @@ button {
 button:hover {
     opacity: 1;
 }
-
-
-
 
 /* Изменяем стили кнопок отмены и регистрации на маленьких экранах */
 @media screen and (max-width: 300px) {
@@ -147,5 +133,11 @@ close-btn {
 #solution-box.active {
     top:0px;
  
+}
+
+#Panelrequests{
+
+    overflow-y: auto;
+
 }
 

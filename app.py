@@ -4,6 +4,8 @@ from flask import Flask, request, make_response, redirect, url_for
 from flask import render_template
 from flask import jsonify
 from database import connect_db, init_db, create_user, get_user_by_token, update_ip_user, create_request, get_user_by_credentials, get_user_request, request_switch_status, get_knowledge_solutions, get_users_with_active_requests, save_request_message, get_request_chat_history
+from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 init_db()
@@ -27,8 +29,24 @@ def registered_devices():
         })
     return registered_device
 
-## начальная страница что перекидыват пользователя дальше
 
+def login_required(role=None):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            token = request.cookies.get("user_token")
+            user = get_user_by_token(token) if token else None
+            if not user:
+                return jsonify({"error": "unauthorized"}), 401
+            if role and user[4] != role:   # user[4] — колонка user_role
+                return jsonify({"error": "forbidden"}), 403
+            # прокидываем пользователя в функцию, чтобы не доставать повторно
+            return f(*args, user=user, **kwargs)
+        return wrapper
+    return decorator
+
+
+## начальная страница что перекидыват пользователя дальше
 @app.route("/")
 def home():
     user_ip = request.remote_addr
@@ -60,15 +78,21 @@ def send_request():
 ## РОУТЫ
 
 @app.route("/api/user_requests/<int:user_id>")
-def get_requests_api(user_id):
+@login_required()
+def get_requests_api(user_id,user):
+    if user[4] != "admin" and user[0] != user_id:
+        return jsonify({"error": "forbidden"}), 403
     user_requests = get_user_request(user_id) 
     return jsonify(user_requests)
 
+
 @app.route("/api/request_switch/<int:request_id>/<new_status>")
-def request_switch(request_id, new_status):
+@login_required(role="admin")
+def request_switch(request_id, new_status, user):
     request_switch_status(request_id, new_status)
     return jsonify({"status": "success", "message": "Статус успешно обновлен"})
     
+
 
 @app.route("/api/get_solution/<category>")
 def get_solution_api(category):
@@ -77,22 +101,56 @@ def get_solution_api(category):
         return jsonify({"status": "success", "data": solutions_list})
     return jsonify({"status": "not_found"})
 
+
 @app.route("/api/get_chat/<int:request_id>")
 def get_chat(request_id):
     history = get_request_chat_history(request_id)
     return jsonify({"status": "success", "history": history})
 
+
 @app.route("/api/send_chat_message", methods=["POST"])
-def send_chat_message():
+@login_required()               # ???
+def send_chat_message(user):
     data = request.json # Принимаем JSON от JavaScript
+    request_id = data.get("request_id") #получает от джейсон даты ид запроса
+    message_text = (data.get("text") or "").strip() # получаем текст сообщения из джейсона или если его нет оставляем пустым, удаляем пробелы с начала и конца
+
+    if not message_text: 
+        return jsonify({"error": "empty message"}), 400
+
+    id_sender = user[0]                #получаем юзера и роль из сессии
+    sender_role = user[4]
+
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute("SELECT user_id FROM requests WHERE id = ?", (request_id,)) # получаем пользователя который отправил заявку
+    row = cur.fetchone()
+    con.close()
+
+    if not row:
+        return jsonify({"error": "request not found"}), 404 # если его нет отправляем ошибку
+
+    request_owner_id = row[0]
+    print(request_owner_id != id_sender)
+    print(request_owner_id , id_sender)
+
+    if sender_role != "admin" and id_sender != request_owner_id: # проверяем доступ
+        return jsonify({"error": "forbidden"}), 403
     
-    request_id = data.get("request_id")
-    id_sender = data.get("sender_id")
-    id_reciev = data.get("receiver_id")
-    message_text = data.get("text")
+
+    if sender_role == "admin": # если отправитель админ, тогда отправяляем хосту заявки 
+        id_reciev = request_owner_id
+    else:
+        # пользователь пишет админу — берём первого админа (упрощённо)
+        con = connect_db()
+        cur = con.cursor()
+        cur.execute("SELECT id FROM accounts WHERE user_role = 'admin' LIMIT 1") #берем первого же админа
+        adm = cur.fetchone()
+        con.close()
+        id_reciev = adm[0] if adm else 0
 
     
-    save_request_message(request_id, id_sender, id_reciev, message_text)
+    save_request_message(request_id, id_sender, id_reciev, message_text) # заполняем базу данными 
     return jsonify({"status": "success"})
 
 
@@ -102,6 +160,7 @@ def send_chat_message():
 
 @app.route("/register", methods=["POST"])
 def register_user():
+
     login = request.form.get("login")
     name = request.form.get("user_name")
     room = request.form.get("room")
@@ -109,6 +168,7 @@ def register_user():
     user_token = str(uuid.uuid4())
     user_role = request.form.get("user_role")
     password = request.form.get("password")
+    password_hash = generate_password_hash(password)
 
     con = connect_db()
     cur = con.cursor()
@@ -118,32 +178,38 @@ def register_user():
         return make_response("Пользователь с таким логином уже существует", 400)
     con.close()
 
-    create_user(login, user_token, user_ip, user_role ,name, password ,room)
+    create_user(login, user_token, user_ip, user_role ,name, password_hash ,room)
     response = make_response(redirect(url_for('admin_panel' if user_role == 'admin' else 'user_panel')))
     response.set_cookie("user_token", user_token, max_age=60*60*24*365)
     
     return response
+
 
 @app.route("/login", methods=["POST"])
 def login_user():
     login = request.form.get("login")
     password = request.form.get("password")
     
-    user = get_user_by_credentials(login, password)
-    user_token = str(uuid.uuid4())
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM accounts WHERE login = ?", (login,))
+    user = cur.fetchone()
+    con.close()
 
-    if user:
-        print(user[4])
-        response = make_response(redirect(url_for('admin_panel' if user[4] == 'admin' else 'user_panel')))
-        response.set_cookie("user_token", user_token, max_age=60*60*24*365)
-        con = connect_db()
-        cur = con.cursor()
-        # Предполагаем, что первое поле (user[0]) — это id или имя пользователя
-        cur.execute('UPDATE accounts SET token = ? WHERE id = ?', (user_token, user[0]))
-        con.commit()
-        con.close()
-        return response
-    return make_response('неправильный логин или пароль', 404)
+    if not user or not check_password_hash(user[6], password):  # user[6] = password
+        return make_response("Неправильный логин или пароль", 401)
+
+    user_token = str(uuid.uuid4())
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute("UPDATE accounts SET token = ? WHERE id = ?", (user_token, user[0]))
+    con.commit()
+    con.close()
+
+    response = make_response(redirect(url_for('admin_panel' if user[4] == 'admin' else 'user_panel')))
+    response.set_cookie("user_token", user_token, max_age=60*60*24*365)
+    return response
+
 
 @app.route("/logout")
 def logout():

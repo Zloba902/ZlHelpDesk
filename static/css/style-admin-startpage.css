@@ -110,13 +110,6 @@
 }
 
  /* 2. ЦЕНТРАЛЬНАЯ ПАНЕЛЬ: Приветствие и статистика */
- .main-dash {
-     flex: 1;
-     padding: 40px;
-     display: flex;
-     flex-direction: column;
-     justify-content: flex-start;
- }
 
  .welcome-title {
      font-size: 28px;

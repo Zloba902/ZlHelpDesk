@@ -71,7 +71,7 @@ def init_db():
 
     cur.execute('''CREATE TABLE IF NOT EXISTS requests(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id TEXT,
+        user_id INTEGER,
         title TEXT,
         request_text TEXT,
         category TEXT,

@@ -3,6 +3,8 @@ const openBtn = document.getElementById('openPanelBtn');
 const closeBtn = document.getElementById('closePanelBtn');
 const panel = document.getElementById('infoPanel');
 
+const solutionBox = document.getElementById('solution-box');
+
 // Открыть панель по клике на верхнюю левую кнопку
 openBtn.addEventListener('click', () => {
     panel.classList.add('active');
@@ -12,6 +14,7 @@ openBtn.addEventListener('click', () => {
 // Закрыть панель
 closeBtn.addEventListener('click', () => {
     panel.classList.remove('active');
+    solutionBox.classList.remove('active')
 });
 
 const openBtn2 = document.getElementById('openPanelBtn2');
@@ -22,18 +25,21 @@ const panel2 = document.getElementById('Panelrequests');
 openBtn2.addEventListener('click', () => {
     panel2.classList.add('active');
     panel.classList.remove('active');
+    solutionBox.classList.remove('active')
 });
 
 
 // Закрыть панель
 closeBtn2.addEventListener('click', () => {
     panel2.classList.remove('active');
+    
 });
+
 
 
 document.getElementById('category-select').addEventListener('change', function () {
     const category = this.value;
-    const solutionBox = document.getElementById('solution-box');
+    
 
     // Если пользователь сбросил выбор на "Выберите проблему", прячем блок
     if (!category) {

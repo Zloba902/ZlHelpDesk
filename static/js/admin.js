@@ -1,6 +1,4 @@
 
-
-
 function loadRequests(userId, userName, currentId) {
     const requestsTitle = document.getElementById("requests-title");
     const requestsList = document.getElementById("requests-list");
@@ -43,7 +41,7 @@ function loadRequests(userId, userName, currentId) {
                     </div>
 
                     <button class="chat-button" 
-                    onclick="openTicketChat('${req.id}', '${userId}', '${currentId}', '${req.title}')">
+                    onclick="openTicketChat('${req.id}', '${currentId}', '${req.title}')">
                     Чат по заявке
                     </button>
                 `;
@@ -68,15 +66,20 @@ function switch_status(request_id, new_status, user_id, user_name) {
 }
 
 let chatInterval = null
+window.addEventListener('beforeunload', () => {
+    if (chatInterval) { clearInterval(chatInterval); chatInterval = null; }
+});
 
-function openTicketChat(requestId, userId, currentId, requestTitle) {
+
+
+function openTicketChat(requestId, currentId, requestTitle) {
 
     if (chatInterval) { clearInterval(chatInterval); chatInterval = null; }
     const chatTabBtn = document.querySelector('.tab-btn[onclick*="chat"]') || document.querySelectorAll('.tab-btn')[1];
     if (chatTabBtn) chatTabBtn.click();
 
     // 2. Инициализируем контейнер чата в правой панели
-    const rightContent = document.querySelector('#tab-chat'); // Твой контейнер правой панели
+    const rightContent = document.querySelector('#tab-chat'); 
     rightContent.innerHTML = `
     <div class = "chat-window">
         <h4 class="chat-header">Чат по заявке #${requestId}</h4>
@@ -143,9 +146,7 @@ function openTicketChat(requestId, userId, currentId, requestTitle) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                request_id: requestId,
-                sender_id: currentId, // Твой ID админа из сессии/кук (или передавай правильный)
-                receiver_id: userId, // ID пользователя, которому отвечаем
+                request_id: requestId, 
                 text: text
             })
         })
