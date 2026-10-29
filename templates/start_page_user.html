@@ -45,15 +45,15 @@
                 </select>
             </div>
 
-            
-            
+
+
             <button class="sidebar-btn" style="margin-top: 10px;" type="submit">Отправить</button>
             <button class="close-btn" id="closePanelBtn" type="button">✖ Закрыть</button>
         </div>
     </form>
 
     <div id="solution-box">
-                
+
     </div>
 
 
@@ -73,6 +73,10 @@
                 </span>
             </p>
             <span class="request-date">{{ req.timestamp }}</span>
+            <button class="sidebar-btn" style="margin-top: 10px;"
+                onclick="openUserTicketChat('{{ req.id }}', '{{ user_id }}', '{{ req.title }}')">
+                💬 Чат по заявке
+            </button>
         </div>
         {% endfor %}
         {% else %}

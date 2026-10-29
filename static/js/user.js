@@ -14,9 +14,6 @@ closeBtn.addEventListener('click', () => {
     panel.classList.remove('active');
 });
 
-
-
-
 const openBtn2 = document.getElementById('openPanelBtn2');
 const closeBtn2 = document.getElementById('closePanelBtn2');
 const panel2 = document.getElementById('Panelrequests');
@@ -27,11 +24,11 @@ openBtn2.addEventListener('click', () => {
     panel.classList.remove('active');
 });
 
+
 // Закрыть панель
 closeBtn2.addEventListener('click', () => {
     panel2.classList.remove('active');
 });
-
 
 
 document.getElementById('category-select').addEventListener('change', function () {

@@ -90,6 +90,7 @@ def send_chat_message():
     id_sender = data.get("sender_id")
     id_reciev = data.get("receiver_id")
     message_text = data.get("text")
+
     
     save_request_message(request_id, id_sender, id_reciev, message_text)
     return jsonify({"status": "success"})

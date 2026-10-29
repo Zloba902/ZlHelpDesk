@@ -11,10 +11,8 @@
 </head>
 
 <body>
-
     <!-- [ЛЕВАЯ ЧАСТЬ]: База знаний, архивы и т.д. -->
     <div class="left-sidebar">
-
     </div>
 
 
@@ -45,7 +43,7 @@
 
                 {% for device in devices %}
                 <button class="pc-item" data-user-id="{{ device.id }}"
-                    onclick="loadRequests('{{ device.id }}', '{{ device.user_name }}')">
+                    onclick="loadRequests('{{ device.id }}', '{{ device.user_name }}', '{{ admin_id }}')">
 
                     <h3>Пользователь:{{ device.user_name }}</h3>
                     <p>Кабинет: {{ device.room_num }}</p>
@@ -87,8 +85,7 @@
                 document.getElementById(targetId).classList.add('active');
             });
         });
-        
-        const currentAdminId = {{ admin_id }};
+
 
     </script>
     <script src="/static/js/admin.js"></script>

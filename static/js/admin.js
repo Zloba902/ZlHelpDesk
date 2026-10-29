@@ -1,4 +1,7 @@
-function loadRequests(userId, userName) {
+
+
+
+function loadRequests(userId, userName, currentId) {
     const requestsTitle = document.getElementById("requests-title");
     const requestsList = document.getElementById("requests-list");
 
@@ -40,7 +43,7 @@ function loadRequests(userId, userName) {
                     </div>
 
                     <button class="chat-button" 
-                    onclick="openTicketChat('${req.id}', '${userId}', '${userName}', '${req.title}')">
+                    onclick="openTicketChat('${req.id}', '${userId}', '${currentId}', '${req.title}')">
                     Чат по заявке
                     </button>
                 `;
@@ -66,10 +69,11 @@ function switch_status(request_id, new_status, user_id, user_name) {
 
 let chatInterval = null
 
-function openTicketChat(requestId, userId, userName, requestTitle) {
+function openTicketChat(requestId, userId, currentId, requestTitle) {
 
+    if (chatInterval) { clearInterval(chatInterval); chatInterval = null; }
     const chatTabBtn = document.querySelector('.tab-btn[onclick*="chat"]') || document.querySelectorAll('.tab-btn')[1];
-    if (chatTabBtn) chatTabBtn.click(); 
+    if (chatTabBtn) chatTabBtn.click();
 
     // 2. Инициализируем контейнер чата в правой панели
     const rightContent = document.querySelector('#tab-chat'); // Твой контейнер правой панели
@@ -95,8 +99,8 @@ function openTicketChat(requestId, userId, userName, requestTitle) {
             .then(response => response.json())
             .then(res => {
                 const msgBox = document.getElementById('chat-messages-box');
-                if (!msgBox) return; 
-                
+                if (!msgBox) return;
+
                 msgBox.innerHTML = '';
                 if (res.history.length === 0) {
                     msgBox.innerHTML = '<p style="color: gray; text-align: center; font-size: 12px;">Сообщений пока нет</p>';
@@ -106,32 +110,31 @@ function openTicketChat(requestId, userId, userName, requestTitle) {
                 res.history.forEach(msg => {
                     const messageDiv = document.createElement('div');
                     messageDiv.className = "message-box"
-                    
+
                     //Выравниваем по братику
-                    const isAdmin = (msg.sender_id === currentAdminId); 
-                    
-                    messageDiv.style.alignSelf = isAdmin ? 'flex-end' : 'flex-start';
-                    messageDiv.style.background = isAdmin ? 'var(--frost-1)' : 'var(--frost-4)';
-                 
-                    
+                    const isMine = Number(msg.sender_id) === Number(currentId);
+
+                    messageDiv.style.alignSelf = isMine ? 'flex-end' : 'flex-start';
+                    messageDiv.style.background = isMine ? 'var(--frost-1)' : 'var(--frost-4)';
+
                     messageDiv.innerHTML = `
                         <p class="message" >${msg.text}</p>
                         <span class="message-date" >${msg.timestamp.split(' ')[1] || ''}</span>
                     `;
                     msgBox.appendChild(messageDiv);
                 });
-                
+
                 msgBox.scrollTop = msgBox.scrollHeight;
             });
     }
     loadChatHistory();
 
-    
-    if (chatInterval) clearInterval(chatInterval);
-    chatInterval = setInterval(loadChatHistory, 3000); 
 
- 
-    document.getElementById('send-chat-btn').onclick = function() {
+    if (chatInterval) clearInterval(chatInterval);
+    chatInterval = setInterval(loadChatHistory, 3000);
+
+
+    document.getElementById('send-chat-btn').onclick = function () {
         const input = document.getElementById('chat-input-text');
         const text = input.value.trim();
         if (!text) return;
@@ -141,17 +144,17 @@ function openTicketChat(requestId, userId, userName, requestTitle) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 request_id: requestId,
-                sender_id: currentAdminId, // Твой ID админа из сессии/кук (или передавай правильный)
+                sender_id: currentId, // Твой ID админа из сессии/кук (или передавай правильный)
                 receiver_id: userId, // ID пользователя, которому отвечаем
                 text: text
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                input.value = ''; // Очищаем поле ввода
-                loadChatHistory(); // Сразу обновляем экран, не дожидаясь таймера
-            }
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    input.value = ''; // Очищаем поле ввода
+                    loadChatHistory(); // Сразу обновляем экран, не дожидаясь таймера
+                }
+            });
     };
 }

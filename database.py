@@ -242,6 +242,7 @@ def get_request_chat_history(request_id):
             "text": row[1],
             "timestamp": row[2]
         })
+
     return history
 
 
