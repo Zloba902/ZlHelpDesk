@@ -1,0 +1,198 @@
+:root {
+    /* --- Polar Night (Темные фоны и границы) --- */
+    --polar-night-1: #2e3440;
+    --polar-night-2: #3b4252;
+    --polar-night-3: #434c5e;
+    --polar-night-4: #4c566a;
+
+    /* --- Snow Storm (Светлый текст и фоны) --- */
+    --snow-storm-1: #d8dee9;
+    --snow-storm-2: #e5e9f0;
+    --snow-storm-3: #eceff4;
+
+    /* --- Frost (Акценты, ссылки, кнопки) --- */
+    --frost-1: #8fbcbb;
+    --frost-2: #88c0d0;
+    --frost-3: #81a1c1;
+    --frost-4: #5e81ac;
+
+    /* --- Aurora (Статусы и ошибки) --- */
+    --aurora-red: #bf616a;
+    --aurora-orange: #d08770;
+    --aurora-yellow: #ebcb8b;
+    --aurora-green: #a3be8c;
+    --aurora-purple: #b48ead;
+
+    /* --- Семантические переменные (Маппинг) --- */
+
+    /* Фоны */
+    --bg-dark: var(--polar-night-1);
+    --panel-bg: var(--polar-night-2);
+    --border-color: var(--polar-night-3);
+    --border-light: var(--polar-night-4);
+    --border-subtle: var(--polar-night-3);
+
+
+    /* Текст */
+    --text-primary: var(--snow-storm-3);
+    --text-secondary: var(--snow-storm-2);
+    --text-muted: var(--snow-storm-1);
+
+    /* Акценты */
+    --accent-alt: var(--frost-2);
+    --cyan-accent: var(--frost-2);
+
+    /* Статусы (на основе Aurora) */
+    --status-new-bg: var(--aurora-purple);
+    --status-new-text: var(--snow-storm-3);
+
+    --status-process-bg: var(--aurora-yellow);
+    --status-process-text: var(--polar-night-1);
+
+    --status-done-bg: var(--aurora-green);
+    --status-done-text: var(--polar-night-1);
+}
+
+
+.request {
+    background-color: var(--polar-night-2);
+    border: 1px solid var(--polar-night-4);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.request h4,
+.solotion h4 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--aurora-green);
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 8px;
+}
+
+.request p,
+.solotion p {
+    margin: 0;
+    font-size: 20px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.solotion {
+    margin: 25px 10px 10px 25px;
+
+}
+
+.status-new {
+    background-color: var(--status-new-bg);
+    color: var(--status-new-text);
+}
+
+.status-process {
+    background-color: var(--status-process-bg);
+    color: var(--status-process-text);
+}
+
+.status-done {
+    background-color: var(--status-done-bg);
+    color: var(--status-done-text);
+}
+
+
+
+.chat-button {
+    background-color: var(--aurora-green);
+    padding: 5px;
+}
+
+
+.chat-window .title {
+    padding-left: 10px;
+    font-size: 20px;
+    color: var(--aurora-orange);
+    margin-bottom: 15px
+}
+
+.chat-window .chat-header {
+    font-size: 23px;
+    color: var(--aurora-purple);
+    margin-bottom: 10px;
+    padding: 7px;
+}
+
+.chat-window #chat-messages-box {
+    flex: 1;
+    min-height: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    background: var(--polar-night-3);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.message-box {
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 80%;
+}
+
+.message {
+    color: var(--polar-night-1);
+    margin: 0;
+    font-size: 16px;
+}
+
+.message-date {
+    font-size: 9px;
+    color: var(--aurora-red);
+    display: block;
+    text-align: right;
+    margin-top: 3px;
+
+}
+
+ * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+     font-family: 'Segoe UI', system-ui, sans-serif;
+ }
+
+ .right-sidebar {
+     width: 340px;
+     background-color: var(--panel-bg);
+     border-left: 1px solid var(--border-color);
+     display: flex;
+     flex-direction: column;
+ }
+
+ .left-sidebar {
+     width: 500px;
+     position: relative;
+     background-color: var(--panel-bg);
+     border-right: 1px solid var(--border-color);
+     display: flex;
+     flex-direction: column;
+     padding: 20px;
+ }
+
+  .main-dash {
+     flex: 1;
+     padding: 40px;
+     display: flex;
+     flex-direction: column;
+     justify-content: flex-start;
+     z-index: 99;
+ }
+
+

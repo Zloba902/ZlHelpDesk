@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpdesk Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-admin-startpage.css') }}">
+
+</head>
+
+<body>
+    <!-- [ЛЕВАЯ ЧАСТЬ]: База знаний, архивы и т.д. -->
+    <div class="left-sidebar">
+    </div>
+
+
+    <div class="main-dash">
+        <h1 class="welcome-title">Добро пожаловать, {{ name }}</h1>
+        <button class="sidebar-btn" onclick="window.location.href='/logout'">Выйти из учетной записи</button>
+
+
+        <div id="requests-panel" style="margin-top:20px;">
+            <div class="section-subtitle" id="requests-title">Выбери пользователя</div>
+            <div id="requests-list"></div>
+        </div>
+    </div>
+
+    <!-- [ПРАВАЯ ЧАСТЬ]: Вкладки "Заявки/Чат" и список активных ПК с ними -->
+    <div class="right-sidebar">
+        <div class="tabs-header">
+            <button class="tab-btn" data-target="tab-request">Заявки</button>
+            <button class="tab-btn" data-target="tab-chat">Чат</button>
+        </div>
+
+        <div class="tabs-content">
+
+            <div id="tab-request" class="tab-pane active">
+                <div class="tab-pane">В сети (есть активные обращения):</div>
+
+                {% for device in devices %}
+                <button class="pc-item" data-user-id="{{ device.id }}"
+                    onclick="loadRequests('{{ device.id }}', '{{ device.user_name }}', '{{ admin_id }}')">
+
+                    <h3>Пользователь:{{ device.user_name }}</h3>
+                    <p>Кабинет: {{ device.room_num }}</p>
+                    <p>ip:{{ device.ip }}</p>
+                    <span class="badge"> {{device.count}} </span>
+
+                </button>
+                {% endfor %}
+
+
+            </div>
+
+
+            <div id="tab-chat" class="tab-pane">
+                <p>Здесь будет сам чат...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Убираем класс 'active' у всех кнопок
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Добавляем класс 'active' текущей нажатой кнопке
+                button.classList.add('active');
+
+                // Получаем ID блока, который нужно показать из атрибута data-target
+                const targetId = button.getAttribute('data-target');
+
+                // Скрываем все блоки с контентом
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+
+                // Показываем нужный блок
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+
+    </script>
+    <script src="/static/js/admin.js"></script>
+</body>
+
+</html>

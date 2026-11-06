@@ -1,0 +1,200 @@
+:root {
+  --bg: var(--polar-night-1);
+  --rm: var(--snow-storm-1);
+  --wt: var(--snow-storm-3);
+}
+
+body {
+  background-color: var(--bg, var(--polar-night-1));
+  color: var(--snow-storm-3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  flex-direction: column;
+  box-sizing: border-box;
+  position: relative;
+  font-size: 30px;
+}
+
+* {
+  box-sizing: border-box
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  border: 2px solid var(--rm);
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+/* Поля ввода на всю ширину */
+input[type=text],
+input[type=password] {
+  font-family: "Tiny5", sans-serif;
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: inline-block;
+  border: none;
+  border-bottom: 5px solid var(--rm);
+  background: var(--bg);
+  color: var(--wt);
+}
+
+/* Добавляем фоновый цвет, когда поля ввода в фокусе */
+input[type=text]:focus,
+input[type=password]:focus {
+  background-color: var(--bg);
+  outline: none;
+}
+
+/* Задаем стили для всех кнопок */
+button {
+  font-size: 15px;
+  font-family: "Tiny5", sans-serif;
+  background-color: var(--snow-storm-3); /* Заменен #ffffff */
+  color: var(--polar-night-1); /* Заменен #000000 */
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+/* Дополнительные стили для кнопки отмены */
+.cancelbtn {
+  padding: 14px 20px;
+  background-color: var(--aurora-red); /* Заменен #f44336 */
+}
+
+/* Добавляем обтекание и одинаковую ширину для кнопок отмены и регистрации */
+.cancelbtn,
+.signupbtn {
+  float: left;
+  width: 50%;
+}
+
+/* Добавляем отступы для контейнерных элементов */
+.container {
+  padding: 16px;
+}
+
+/* Модальное окно (фон) */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--polar-night-1); /* Заменен #050505 */
+  padding-top: 50px;
+}
+
+/* Модальное окно (содержимое) */
+.modal-content {
+  background-color: transparent; /* Заменен #0a020200 (прозрачный) */
+  margin: 5% auto 15% auto;
+  border: none;
+  width: 70%;
+}
+
+/* Стили горизонтального разделителя */
+hr {
+  border: 1px solid var(--rm);
+  margin-bottom: 25px;
+}
+
+/* Кнопка закрытия (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--snow-storm-2); /* Заменен #f1f1f1 */
+}
+
+.close:hover,
+.close:focus {
+  color: var(--aurora-red); /* Заменен #f44336 */
+  cursor: pointer;
+}
+
+/* Очистка обтекания */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Изменяем стили кнопок отмены и регистрации на маленьких экранах */
+@media screen and (max-width: 300px) {
+  .cancelbtn,
+  .signupbtn {
+    width: 100%;
+  }
+}
+
+#mySidenav a {
+  position: absolute;
+  left: -100px;
+  transition: 0.3s;
+  padding: 15px;
+  width: 120px;
+  text-decoration: none;
+  font-size: 20px;
+  color: var(--polar-night-1); /* Заменен rgb(5, 5, 5) */
+  border-radius: 0 5px 5px 0;
+}
+
+#mySidenav a:hover {
+  left: 0;
+}
+
+/* Ссылка "О нас": 20px от верха, зеленый фон */
+#about {
+  top: 20px;
+  background-color: var(--aurora-green); /* Заменен #04AA6D */
+}
+
+#hower1,
+#hower2,
+#hower3,
+#hower4 {
+  color: var(--bg);
+  background-color: var(--wt);
+}
+
+#hower1 {
+  top: 20px;
+}
+
+#hower2 {
+  top: 80px;
+}
+
+#hower3 {
+  top: 140px;
+}
+
+#hower4 {
+  top: 200px;
+}
