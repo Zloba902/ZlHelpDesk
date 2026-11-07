@@ -4,6 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Startpage</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,13 +21,17 @@
             <p>Это страница пользователя.</p>
             <button class="sidebar-btn" id="openPanelBtn2"> Ваши заявки </button>
             <button class="sidebar-btn" id="openPanelBtn">Новая заявка</button>
-            <button class="sidebar-btn" onclick="window.location.href='/logout'">Выйти из учетной записи</button>
+            <form action="/logout" method="POST" style="display: contents;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button class="sidebar-btn" type="submit">Выйти из учетной записи</button>
+            </form>
         </div>
     </div>
 
 
     <div class=" main-dash">
         <form class="modal-content" action="/send_request" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <div class="side-panel" id="infoPanel">
                 <h3>Информация о заявке (опишите проблему)</h3>
                 <div class="form-group">
@@ -75,8 +80,8 @@
                     </span>
                 </p>
                 <span class="request-date">{{ req.timestamp }}</span>
-                <button class="sidebar-btn" style="margin-top: 10px;"
-                    onclick="openTicketChat('{{ req.id }}', '{{ user_id }}', '{{ req.title }}')">
+                <button class="sidebar-btn open-chat-btn" style="margin-top: 10px;"
+                    data-request-id="{{ req.id }}" data-user-id="{{ user_id }}" data-title="{{ req.title }}">
                     Чат по заявке
                 </button>
                 {% if req.status in ['new', 'process'] %}

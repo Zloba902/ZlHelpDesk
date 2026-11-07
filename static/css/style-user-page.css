@@ -13,8 +13,6 @@ body {
 }
 
 
-
-
 input[type=text],
 input[type=password],
 textarea[request_text] {
@@ -38,20 +36,7 @@ input[type=password]:focus {
 }
 
 /* Задаем стили для всех кнопок */
-button {
-    font-size: 15px;
-    font-family: "MyCustomFont", sans-serif;
-    background-color: var(--snow-storm-3);
-    /* Заменен #ffffff */
-    color: var(--polar-night-1);
-    /* Заменен #000000 */
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    opacity: 0.9;
-}
+
 
 button:hover {
     opacity: 1;
@@ -84,7 +69,6 @@ button:hover {
     z-index: 10;
 }
 
-/* Класс, который будет добавляться с помощью JS */
 .side-panel.active {
     left: 500px;
 }

@@ -12,6 +12,16 @@ else:
 
 DB_NAME = os.path.join(BASE_DIR, "helpdesk.db")
 
+KNOWLEDGE_BASE_SEED = [
+    ("200", "printer", "Проблемы с принтером", "включить в розетку"),
+    ("200", "printer", "Документ «застрял» в очереди печати",
+     "Откройте «Устройства и принтеры», очистите очередь печати."),
+    ("200", "printer", "Принтер горит красным / мигает",
+     "Проверьте лоток с бумагой и плотность закрытия крышки картриджа."),
+    (None, "internet", "Пишет «Без доступа к интернету»",
+     "Попробуйте перезагрузить роутер или переподключить Wi-Fi."),
+]
+
 ## работа с базой данных пользователей
 
 
@@ -59,6 +69,15 @@ def update_ip_user(token, new_ip):
     con = connect_db()
     cur = con.cursor()
     cur.execute('UPDATE accounts SET ip = ? WHERE token = ?', (new_ip, token))
+    con.commit()
+    con.close()
+
+
+## Сбросить токен при выходе из системы
+def clear_user_token(token):
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute('UPDATE accounts SET token = NULL WHERE token = ?', (token,))
     con.commit()
     con.close()
 
@@ -113,7 +132,14 @@ def init_db():
         FOREIGN KEY (request_id) REFERENCES requests(id)
         )
     ''')
-    
+
+    # На новом сервере база знаний заполняется начальными записями
+    if cur.execute('SELECT COUNT(*) FROM knowledge_base').fetchone()[0] == 0:
+        cur.executemany(
+            'INSERT INTO knowledge_base (eror_code, category, category_title, content) VALUES (?, ?, ?, ?)',
+            KNOWLEDGE_BASE_SEED,
+        )
+
     con.commit()
     con.close()
 
@@ -140,7 +166,7 @@ def get_user_request(user_id):
         SELECT r.id, r.title, r.request_text, r.status, r.category, u.user_name
         FROM requests r
         LEFT JOIN accounts u ON r.user_id = u.id
-        WHERE r.user_id = ? AND r.status != 'done'
+        WHERE r.user_id = ? 
     ''', (user_id,))
     
     rows = cur.fetchall() 
@@ -158,6 +184,34 @@ def get_user_request(user_id):
             "user": row[5]
         })
     return result
+
+def get_all_request():
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute('''
+        SELECT r.id, r.title, r.request_text, r.status, r.category, u.user_name, r.user_id
+        FROM requests r
+        LEFT JOIN accounts u ON r.user_id = u.id
+    ''')
+    
+    rows = cur.fetchall() 
+    con.close()
+    
+
+    result = []
+    for row in rows:
+        result.append({
+            "id": row[0],
+            "title": row[1],
+            "request_text": row[2],
+            "status": row[3],
+            "category": row[4],
+            "user": row[5],
+            "user_id": row[6]
+        })
+    return result
+
+
 
 def get_request_owner(request_id):
     con = connect_db()
@@ -231,13 +285,13 @@ def get_knowledge_solutions(category):
 
 #КОМАНДЫ ДЛЯ РАБОТЫ С БД ЧАТА
 
-def save_request_message(request_id, id_sender, id_reciev, text):
+def save_request_message(request_id, id_sender, id_reciev, text, message_type='text', file_path=None):
     con = connect_db()
     cur = con.cursor()
     cur.execute('''
         INSERT INTO messages (request_id, id_sender, id_reciev, message_text, message_type, file_path)
         VALUES (?, ?, ?, ?, ?, ?)
-    ''', (request_id, id_sender, id_reciev, text))
+    ''', (request_id, id_sender, id_reciev, text, message_type, file_path))
     con.commit()
     con.close()
 
@@ -245,23 +299,23 @@ def get_request_chat_history(request_id):
     con = connect_db()
     cur = con.cursor()
     cur.execute('''
-        SELECT id_sender, message_text, timestamp 
-        FROM messages 
+        SELECT id_sender, message_text, timestamp, message_type, file_path
+        FROM messages
         WHERE request_id = ?
         ORDER BY timestamp ASC
     ''', (request_id,))
-    
     rows = cur.fetchall()
     con.close()
-    
+
     history = []
     for row in rows:
         history.append({
             "sender_id": row[0],
             "text": row[1],
-            "timestamp": row[2]
+            "timestamp": row[2],
+            "type": row[3] or "text",
+            "file_path": row[4],   # относительный путь, например "chat_uploads/<uuid>.png"
         })
-
     return history
 
 
@@ -272,3 +326,81 @@ def delete_request(request_id):
     cur.execute("DELETE FROM requests WHERE id = ?", (request_id,))
     con.commit()
     con.close()
+
+
+
+def get_requests_statistics():
+    """
+    Возвращает агрегированную статистику по всем заявкам.
+    Один коннект, несколько GROUP BY — быстро и без N+1.
+    """
+    con = connect_db()
+    cur = con.cursor()
+
+    # --- 1. Общие цифры ---
+    cur.execute("SELECT COUNT(*) FROM requests")
+    total = cur.fetchone()[0] or 0
+
+    cur.execute("SELECT COUNT(*) FROM requests WHERE status = 'done'")
+    done = cur.fetchone()[0] or 0
+
+    active = total - done
+    percent_done = round((done / total) * 100, 1) if total else 0.0
+
+    # --- 2. Разбивка по статусам ---
+    cur.execute("""
+        SELECT status, COUNT(*) FROM requests GROUP BY status
+    """)
+    by_status = {row[0]: row[1] for row in cur.fetchall()}
+    # гарантируем, что все 3 статуса есть в словаре (даже если 0)
+    for s in ('new', 'process', 'done'):
+        by_status.setdefault(s, 0)
+
+    # --- 3. Разбивка по категориям ---
+    cur.execute("""
+        SELECT COALESCE(category, 'без категории') AS cat, COUNT(*) AS cnt
+        FROM requests
+        GROUP BY cat
+        ORDER BY cnt DESC
+    """)
+    by_category = [{"category": r[0], "count": r[1]} for r in cur.fetchall()]
+
+    # --- 4. По пользователям (топ всех, фронт обрежет если надо) ---
+    cur.execute("""
+        SELECT
+            u.id,
+            u.user_name,
+            u.room_num,
+            COUNT(r.id)                                    AS total,
+            SUM(CASE WHEN r.status != 'done' THEN 1 ELSE 0 END) AS active,
+            SUM(CASE WHEN r.status =  'done' THEN 1 ELSE 0 END) AS done
+        FROM accounts u
+        LEFT JOIN requests r ON r.user_id = u.id
+        WHERE u.user_role != 'admin'          -- админов в статистику не мешаем
+        GROUP BY u.id
+        HAVING total > 0
+        ORDER BY total DESC
+    """)
+    by_user = [
+        {
+            "id":        r[0],
+            "user_name": r[1],
+            "room_num":  r[2],
+            "total":     r[3],
+            "active":    r[4],
+            "done":      r[5],
+        }
+        for r in cur.fetchall()
+    ]
+
+    con.close()
+
+    return {
+        "total":         total,
+        "active":        active,
+        "done":          done,
+        "percent_done":  percent_done,
+        "by_status":     by_status,
+        "by_category":   by_category,
+        "by_user":       by_user,
+    }

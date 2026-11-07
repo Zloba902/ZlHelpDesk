@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Helpdesk Admin</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-admin-startpage.css') }}">
@@ -13,12 +14,21 @@
 <body>
     <!-- [ЛЕВАЯ ЧАСТЬ]: База знаний, архивы и т.д. -->
     <div class="left-sidebar">
+        <button class="sidebar-btn" onclick="loadAllRequests('{{ admin_id }}')">
+            История заявок
+        </button>
+        <button class="sidebar-btn" onclick="loadStatistics()">
+            📊 Статистика
+        </button>
     </div>
 
 
     <div class="main-dash">
         <h1 class="welcome-title">Добро пожаловать, {{ name }}</h1>
-        <button class="sidebar-btn" onclick="window.location.href='/logout'">Выйти из учетной записи</button>
+        <form action="/logout" method="POST" style="display: contents;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button class="sidebar-btn" type="submit">Выйти из учетной записи</button>
+        </form>
 
 
         <div id="requests-panel" style="margin-top:20px;">
@@ -41,7 +51,7 @@
 
                 {% for device in devices %}
                 <button class="pc-item" data-user-id="{{ device.id }}"
-                    onclick="loadRequests('{{ device.id }}', '{{ device.user_name }}', '{{ admin_id }}')">
+                    data-user-name="{{ device.user_name }}" data-admin-id="{{ admin_id }}">
 
                     <h3>Пользователь:{{ device.user_name }}</h3>
                     <p>Кабинет: {{ device.room_num }}</p>

@@ -1,0 +1,11 @@
+# Данные и секреты
+*.db
+chat_uploads/
+*.pem
+*.key
+
+# Python и сборка
+__pycache__/
+venv/
+build/
+dist/

@@ -90,13 +90,20 @@ document.getElementById('category-select').addEventListener('change', function (
         });
 });
 
+document.querySelectorAll('.open-chat-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        openTicketChat(btn.dataset.requestId, btn.dataset.userId, btn.dataset.title);
+    });
+});
+
 function cancelRequest(requestId) {
     if (!confirm(" отменить эту заявку?")) {
         return; 
     }
 
     fetch(`/api/cancel_request/${requestId}`, {
-        method: 'POST'
+        method: 'POST',
+        headers: csrfHeaders()
     })
     .then(response => {
         if (response.ok) {
