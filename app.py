@@ -472,9 +472,8 @@ def user_panel():
     update_ip_user(user_token, user_ip)
 
     user_id = user[0]
-    user_requests = get_user_request(user_id)
-
-    return render_template("start_page_user.html", requests=user_requests, user_id = user_id)
+    # Заявки загружает user.js через /api/requests/<user_id>
+    return render_template("start_page_user.html", user_id = user_id)
 
 
 

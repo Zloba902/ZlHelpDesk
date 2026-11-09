@@ -105,6 +105,8 @@ def init_db():
         request_text TEXT,
         category TEXT,
         status TEXT DEFAULT 'new',
+        start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        close_date TIMESTAMP, 
         FOREIGN KEY (user_id) REFERENCES accounts(id),
         FOREIGN KEY (category) REFERENCES knowledge_base(category)
     )
@@ -163,7 +165,7 @@ def get_user_request(user_id):
     con = connect_db()
     cur = con.cursor()
     cur.execute('''
-        SELECT r.id, r.title, r.request_text, r.status, r.category, u.user_name
+        SELECT r.id, r.title, r.request_text, r.status, r.category, u.user_name, r.start_date, r.close_date
         FROM requests r
         LEFT JOIN accounts u ON r.user_id = u.id
         WHERE r.user_id = ? 
@@ -181,7 +183,9 @@ def get_user_request(user_id):
             "request_text": row[2],
             "status": row[3],
             "category": row[4],
-            "user": row[5]
+            "user": row[5],
+            "start_date":row[6],
+            "close_date":row[7]
         })
     return result
 
@@ -189,7 +193,7 @@ def get_all_request():
     con = connect_db()
     cur = con.cursor()
     cur.execute('''
-        SELECT r.id, r.title, r.request_text, r.status, r.category, u.user_name, r.user_id
+        SELECT r.id, r.title, r.request_text, r.status, r.category, u.user_name, r.user_id, r.start_date, close_date
         FROM requests r
         LEFT JOIN accounts u ON r.user_id = u.id
     ''')
@@ -207,7 +211,9 @@ def get_all_request():
             "status": row[3],
             "category": row[4],
             "user": row[5],
-            "user_id": row[6]
+            "user_id": row[6],
+            "start_date":row[7],
+            "close_date":row[8]
         })
     return result
 

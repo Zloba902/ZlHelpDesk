@@ -52,35 +52,8 @@ function loadRequests(userId, userName, currentId) {
             }
 
             requests.forEach((req) => {
-                const reqCard = document.createElement('div');
-                reqCard.className = 'request';
-
-                reqCard.innerHTML = `
-                    <h4>#${req.id}: <span class="safe-title"></span></h4>
-                    <p class="code">Код ошибки: <span class="safe-category"></span></p>
-                    <p>Текст: <span class="safe-text"></span></p>
-                    <div class="dropdown">
-                        <button class="dropbtn">
-                            Статус: <span class="status-badge"></span>
-                        </button>
-                        <i class="fa fa-caret-down"></i>
-                        <div class="dropdown-content">
-                            <button onclick="switch_status('${req.id}', 'new')">В обработке</button>
-                            <button onclick="switch_status('${req.id}', 'process')">В процессе</button>
-                            <button onclick="switch_status('${req.id}', 'done')">Готово</button>
-                        </div>
-                    </div>
-                    <button class="chat-button">Чат по заявке</button>
-                `;
-
-                reqCard.querySelector('.safe-title').textContent    = req.title;
-                reqCard.querySelector('.safe-category').textContent = req.category || "нет";
-                reqCard.querySelector('.safe-text').textContent     = req.request_text;
-                fillStatus(reqCard, req.status);
-                reqCard.querySelector('.chat-button').onclick = () =>
-                    openTicketChat(req.id, currentId, req.title);
-
-                requestsList.appendChild(reqCard);
+                // Пользователь и так указан в заголовке, поэтому строку с именем не показываем
+                requestsList.appendChild(createAdminRequestCard(req, currentId, false));
             });
         })
         .catch((error) => {
@@ -89,6 +62,62 @@ function loadRequests(userId, userName, currentId) {
                 '<p style="color: red;">Не удалось загрузить заявки.</p>';
         });
 }
+
+function loadDate(dateDB){
+    if(dateDB == null){
+        return "------"
+    }
+    var isoStr = dateDB.replace(" ", "T") + "Z";
+    var date = new Date(isoStr)  
+    return date.toLocaleString()
+}
+
+// Карточка заявки для админа: одна функция для «Заявок пользователя» и «Истории заявок».
+// showUser — показывать ли строку с именем автора заявки.
+function createAdminRequestCard(req, currentId, showUser) {
+    const reqCard = document.createElement('div');
+    reqCard.className = 'request';
+
+    // В разметке только пустые элементы, данные вставляются через textContent
+    reqCard.innerHTML = `
+        <p class="request-user"><b>Пользователь:</b> <span class="safe-user"></span></p>
+        <h4>#${req.id}: <span class="safe-title"></span></h4>
+        <p class="code">Код ошибки: <span class="safe-category"></span></p>
+        <p class="code">Дата создания: <span class="safe-start-date"></span></p>
+        <p class="code">Дата закрытия: <span class="safe-close-date"></span></p>
+        <p>Текст: <span class="safe-text"></span></p>
+        <div class="dropdown">
+            <button class="dropbtn">
+                Статус: <span class="status-badge"></span>
+            </button>
+            <i class="fa fa-caret-down"></i>
+            <div class="dropdown-content">
+                <button onclick="switch_status('${req.id}', 'new')">В обработке</button>
+                <button onclick="switch_status('${req.id}', 'process')">В процессе</button>
+                <button onclick="switch_status('${req.id}', 'done')">Готово</button>
+            </div>
+        </div>
+        <button class="chat-button">Чат по заявке</button>
+    `;
+
+    if (showUser) {
+        reqCard.querySelector('.safe-user').textContent = req.user || '—';
+    } else {
+        reqCard.querySelector('.request-user').remove();
+    }
+
+    reqCard.querySelector('.safe-title').textContent      = req.title;
+    reqCard.querySelector('.safe-category').textContent   = req.category || 'нет';
+    reqCard.querySelector('.safe-start-date').textContent = loadDate(req.start_date);
+    reqCard.querySelector('.safe-close-date').textContent = loadDate(req.close_date);
+    reqCard.querySelector('.safe-text').textContent       = req.request_text;
+    fillStatus(reqCard, req.status);
+    reqCard.querySelector('.chat-button').onclick = () =>
+        openTicketChat(req.id, currentId, req.title);
+
+    return reqCard;
+}
+
 
 function loadAllRequests(currentId) {
     const requestsTitle = document.getElementById("requests-title");
@@ -144,37 +173,8 @@ function loadAllRequests(currentId) {
                 }
 
                 filtered.forEach(req => {
-                    const reqCard = document.createElement('div');
-                    reqCard.className = 'request';
-
-                    reqCard.innerHTML = `
-                        <p class="request-user"><b>Пользователь:</b> <span class="safe-user"></span></p>
-                        <h4>#${req.id}: <span class="safe-title"></span></h4>
-                        <p class="code">Код ошибки: <span class="safe-category"></span></p>
-                        <p>Текст: <span class="safe-text"></span></p>
-                        <div class="dropdown">
-                            <button class="dropbtn">
-                                Статус: <span class="status-badge"></span>
-                            </button>
-                            <i class="fa fa-caret-down"></i>
-                            <div class="dropdown-content">
-                                <button onclick="switch_status('${req.id}', 'new')">В обработке</button>
-                                <button onclick="switch_status('${req.id}', 'process')">В процессе</button>
-                                <button onclick="switch_status('${req.id}', 'done')">Готово</button>
-                            </div>
-                        </div>
-                        <button class="chat-button">Чат по заявке</button>
-                    `;
-
-                    reqCard.querySelector('.safe-user').textContent     = req.user || '—';
-                    reqCard.querySelector('.safe-title').textContent    = req.title;
-                    reqCard.querySelector('.safe-category').textContent = req.category || 'нет';
-                    reqCard.querySelector('.safe-text').textContent     = req.request_text;
-                    fillStatus(reqCard, req.status);
-                    reqCard.querySelector('.chat-button').onclick = () =>
-                        openTicketChat(req.id, currentId, req.title);
-
-                    listContainer.appendChild(reqCard);
+                    // В общей истории заявки разных людей, поэтому имя показываем
+                    listContainer.appendChild(createAdminRequestCard(req, currentId, true));
                 });
             }
 

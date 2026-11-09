@@ -66,35 +66,8 @@
 
         <div class="side-panel" id="Panelrequests">
             <h3>Ваши заявки</h3>
-            {% if requests %}
-            {% for req in requests %}
-            <div class="request">
-                <h4>#{{ req.id }}: {{ req.title }}</h4>
-                <p>Описание проблемы: {{ req.request_text }}</p>
-                <p>Категория: {{ req.category if req.category else 'не выбрана' }}</p>
-
-
-                <p>Статус:
-                    <span class="status-badge status-{{ req.status | lower }}">
-                        {{ req.status }}
-                    </span>
-                </p>
-                <span class="request-date">{{ req.timestamp }}</span>
-                <button class="sidebar-btn open-chat-btn" style="margin-top: 10px;"
-                    data-request-id="{{ req.id }}" data-user-id="{{ user_id }}" data-title="{{ req.title }}">
-                    Чат по заявке
-                </button>
-                {% if req.status in ['new', 'process'] %}
-                <button class="sidebar-btn" style="margin-top: 10px;"
-                    onclick="cancelRequest('{{ req.id }}')">
-                    ✖ Отменить заявку
-                </button>
-                 {% endif %}
-            </div>
-            {% endfor %}
-            {% else %}
-            <p class="no-requests">Вы еще не отправляли ни одной заявки.</p>
-            {% endif %}
+            <!-- Карточки заявок рисует user.js (loadUserRequests) -->
+            <div id="user-requests-list" data-user-id="{{ user_id }}"></div>
             <button class="close-btn" id="closePanelBtn2">✖ Закрыть</button>
         </div>
     </div>
