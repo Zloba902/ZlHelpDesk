@@ -231,7 +231,11 @@ def get_request_owner(request_id):
 def request_switch_status(request_id, new_status):
     con = connect_db()
     cur = con.cursor()
-    cur.execute('UPDATE requests SET status = ? WHERE id = ?', (new_status, request_id))
+    if new_status == "done":
+        cur.execute('UPDATE requests SET status = ?, close_date = COALESCE(close_date, CURRENT_TIMESTAMP) WHERE id = ?', (new_status, request_id))
+    else:
+        cur.execute('UPDATE requests SET status = ?, close_date = NULL  WHERE id = ?', (new_status, request_id))
+
     con.commit()
     con.close()
 

@@ -69,7 +69,7 @@ function loadDate(dateDB){
     }
     var isoStr = dateDB.replace(" ", "T") + "Z";
     var date = new Date(isoStr)  
-    return date.toLocaleString()
+    return date.toLocaleString('ru-RU')
 }
 
 // Карточка заявки для админа: одна функция для «Заявок пользователя» и «Истории заявок».
