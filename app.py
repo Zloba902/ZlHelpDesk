@@ -196,8 +196,20 @@ def send_request():
         return redirect(url_for("home"))
 
     request_title = request.form.get("title")
+    request_title, error = check_field(request_title, 100, "Title")
+    if error:
+        return make_response(error), 400
+
     request_text = request.form.get("request_text")
+    request_text, error = check_field(request_text, 1000, "request text")
+    if error:
+        return make_response(error), 400
+
     request_category = request.form.get("category") 
+    request_category = (request_category or "").strip() 
+    if not request_category: 
+        request_category = None
+
 
     create_request(user[0], request_title, request_text, request_category)
     return redirect(url_for("user_panel"))
@@ -274,7 +286,6 @@ def send_chat_message(user):
     message_text = (data.get("text") or "").strip() # получаем текст сообщения из джейсона или если его нет оставляем пустым, удаляем пробелы с начала и конца
     if not message_text: 
         return jsonify({"error": "empty message"}), 400
-
     try:
         request_id = int(data.get("request_id"))
     except (TypeError, ValueError):
@@ -375,19 +386,52 @@ def chat_upload(filename, user):
 
 ## РЕГИСТРАЦИЯ, ЛОГИН, ЛОГАУТ
 
+def check_field(field, field_size, field_name):
+    text = (field or "").strip() # получаем текст сообщения из джейсона или если его нет оставляем пустым, удаляем пробелы с начала и конца
+    if not text: 
+        return text, f"{field_name}: строка пуста"
+    if len(text) > field_size:
+        return text, f"строка больше {field_size}"
+    return text, None
+
+def check_password(password, field_size):
+      # получаем текст сообщения из джейсона или если его нет оставляем пустым, удаляем пробелы с начала и конца
+    if not (password or "").strip() : 
+        return password, f"строка пароля пуста"
+    if len(password or "") < field_size:
+        return password, f"строка меньше {field_size}"
+    return password, None
+
 
 @app.route("/register", methods=["POST"])
 def register_user():
 
     login = request.form.get("login")
+    login, error = check_field(login, 30, "login")
+    if error:
+        return make_response(error), 400
+    
     name = request.form.get("user_name")
+    name, error = check_field(name, 50, "name")
+    if error:
+        return make_response(error), 400
+
     room = request.form.get("room")
+    room, error = check_field(room, 6, "room_num")
+    if error:
+        return make_response(error), 400
+
     user_ip = request.remote_addr
     user_token = str(uuid.uuid4())
     user_role = "user"   # админы создаются только командой create-admin
     password = request.form.get("password")
+    password, error = check_password(password, 8)
+    if error:
+        return make_response(error), 400
+
     password_hash = generate_password_hash(password)
 
+    
     con = connect_db()
     cur = con.cursor()
     cur.execute("SELECT id FROM accounts WHERE login = ?", (login,))
@@ -534,3 +578,4 @@ if __name__ == "__main__":
         debug=os.environ.get("HELPDESK_DEBUG") == "1",   # только для разработки
         ssl_context=(SSL_CERT, SSL_KEY) if USE_HTTPS else None,
     )
+

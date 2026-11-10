@@ -92,9 +92,9 @@ function createAdminRequestCard(req, currentId, showUser) {
             </button>
             <i class="fa fa-caret-down"></i>
             <div class="dropdown-content">
-                <button onclick="switch_status('${req.id}', 'new')">В обработке</button>
+                <button onclick="switch_status('${req.id}', 'new')">Новая</button>
                 <button onclick="switch_status('${req.id}', 'process')">В процессе</button>
-                <button onclick="switch_status('${req.id}', 'done')">Готово</button>
+                <button onclick="switch_status('${req.id}', 'done')">Выполнена</button>
             </div>
         </div>
         <button class="chat-button">Чат по заявке</button>
@@ -415,12 +415,11 @@ function openTicketChat(requestId, currentId, requestTitle) {
                     msgBox.appendChild(messageDiv);
                 });
 
-                msgBox.scrollTop = msgBox.scrollHeight;
+               // msgBox.scrollTop = msgBox.scrollHeight; --  сделать обработку на новые сообщения 
             })
             .catch(err => {
                 const msgBox = document.getElementById('chat-messages-box');
-                // ❌ БЫЛО сломанные теги: `< p style = "color:red;" > ... </ > `
-                // ✅ СТАЛО:
+
                 if (msgBox) msgBox.innerHTML = `<p style="color:red;">${err.message}</p>`;
                 console.error(err);
             });

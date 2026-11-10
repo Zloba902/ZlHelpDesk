@@ -153,7 +153,7 @@ def create_request(user_id, title, request_text, category):
     cur = con.cursor()
     cur.execute(
         '''
-         INSERT INTO requests (user_id, title, request_text, category) 
+         INSERT INTO requests (user_id, title, request_text, category ) 
                VALUES (?, ?, ?, ?)
            ''',
        (user_id, title, request_text, category),
@@ -169,6 +169,7 @@ def get_user_request(user_id):
         FROM requests r
         LEFT JOIN accounts u ON r.user_id = u.id
         WHERE r.user_id = ? 
+        ORDER BY r.start_date DESC
     ''', (user_id,))
     
     rows = cur.fetchall() 
@@ -196,6 +197,7 @@ def get_all_request():
         SELECT r.id, r.title, r.request_text, r.status, r.category, u.user_name, r.user_id, r.start_date, close_date
         FROM requests r
         LEFT JOIN accounts u ON r.user_id = u.id
+        ORDER BY r.start_date ASC
     ''')
     
     rows = cur.fetchall() 
