@@ -20,15 +20,16 @@
         <button class="sidebar-btn" onclick="loadStatistics()">
             📊 Статистика
         </button>
+        <form action="/logout" method="POST" style="display: contents;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button class="sidebar-btn" type="submit">Выйти из учетной записи</button>
+        </form>
     </div>
 
 
     <div class="main-dash">
         <h1 class="welcome-title">Добро пожаловать, {{ name }}</h1>
-        <form action="/logout" method="POST" style="display: contents;">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <button class="sidebar-btn" type="submit">Выйти из учетной записи</button>
-        </form>
+        
 
 
         <div id="requests-panel" style="margin-top:20px;">

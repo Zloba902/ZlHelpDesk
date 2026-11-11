@@ -1,6 +1,6 @@
 
 let chatInterval = null
-let currentRequestsView = null;  
+let currentRequestsView = null;
 
 // Заголовок с CSRF-токеном для всех POST-запросов
 function csrfHeaders(extra = {}) {
@@ -63,12 +63,12 @@ function loadRequests(userId, userName, currentId) {
         });
 }
 
-function loadDate(dateDB){
-    if(dateDB == null){
+function loadDate(dateDB) {
+    if (dateDB == null) {
         return "------"
     }
     var isoStr = dateDB.replace(" ", "T") + "Z";
-    var date = new Date(isoStr)  
+    var date = new Date(isoStr)
     return date.toLocaleString('ru-RU')
 }
 
@@ -107,11 +107,11 @@ function createAdminRequestCard(req, currentId, showUser) {
         reqCard.querySelector('.request-user').remove();
     }
 
-    reqCard.querySelector('.safe-title').textContent      = req.title;
-    reqCard.querySelector('.safe-category').textContent   = req.category || 'нет';
+    reqCard.querySelector('.safe-title').textContent = req.title;
+    reqCard.querySelector('.safe-category').textContent = req.category || 'нет';
     reqCard.querySelector('.safe-start-date').textContent = loadDate(req.start_date);
     reqCard.querySelector('.safe-close-date').textContent = loadDate(req.close_date);
-    reqCard.querySelector('.safe-text').textContent       = req.request_text;
+    reqCard.querySelector('.safe-text').textContent = req.request_text;
     fillStatus(reqCard, req.status);
     reqCard.querySelector('.chat-button').onclick = () =>
         openTicketChat(req.id, currentId, req.title);
@@ -122,7 +122,7 @@ function createAdminRequestCard(req, currentId, showUser) {
 
 function loadAllRequests(currentId) {
     const requestsTitle = document.getElementById("requests-title");
-    const requestsList  = document.getElementById("requests-list");
+    const requestsList = document.getElementById("requests-list");
 
     requestsTitle.innerText = "История всех заявок";
     currentRequestsView = () => loadAllRequests(currentId);
@@ -141,9 +141,9 @@ function loadAllRequests(currentId) {
             }
 
             const counts = {
-                all:    requests.length,
+                all: requests.length,
                 active: requests.filter(r => r.status !== 'done').length,
-                done:   requests.filter(r => r.status === 'done').length,
+                done: requests.filter(r => r.status === 'done').length,
             };
 
             // --- фильтры ---
@@ -164,8 +164,8 @@ function loadAllRequests(currentId) {
 
                 const filtered =
                     filter === 'active' ? requests.filter(r => r.status !== 'done') :
-                    filter === 'done'   ? requests.filter(r => r.status === 'done')   :
-                                          requests;
+                        filter === 'done' ? requests.filter(r => r.status === 'done') :
+                            requests;
 
                 if (filtered.length === 0) {
                     listContainer.innerHTML =
@@ -200,7 +200,7 @@ function loadAllRequests(currentId) {
 
 function loadStatistics() {
     const requestsTitle = document.getElementById("requests-title");
-    const requestsList  = document.getElementById("requests-list");
+    const requestsList = document.getElementById("requests-list");
 
     requestsTitle.innerText = "Статистика по заявкам";
     currentRequestsView = () => loadStatistics();   // «обновить» в текущем виде
@@ -339,6 +339,7 @@ function switch_status(request_id, new_status, user_id, user_name) {
 
 
 function openTicketChat(requestId, currentId, requestTitle) {
+    var msgCount = 0;
 
     if (chatInterval) { clearInterval(chatInterval); chatInterval = null; }
     const chatTabBtn = document.querySelector('.tab-btn[onclick*="chat"]') || document.querySelectorAll('.tab-btn')[1];
@@ -353,7 +354,7 @@ function openTicketChat(requestId, currentId, requestTitle) {
 
         <div id="chat-messages-box"></div>
 
-        <div style="display:flex; gap:10px; align-items:center;">
+        <div class = "chat-table">
             <input type="file" id="chat-file-input" accept="image/*" style="display:none;">
             <button class="dropbtn" id="attach-btn" title="Прикрепить изображение">📎</button>
             <input type="text" id="chat-input-text" placeholder="Напишите ответ..."
@@ -379,44 +380,50 @@ function openTicketChat(requestId, currentId, requestTitle) {
                 const msgBox = document.getElementById('chat-messages-box');
                 if (!msgBox) return;
 
-                msgBox.innerHTML = '';
+                
                 if (res.history.length === 0) {
                     msgBox.innerHTML = '<p style="color: gray; text-align: center; font-size: 12px;">Сообщений пока нет</p>';
                     return;
                 }
 
-                res.history.forEach(msg => {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = "message-box"
+                if (msgCount == res.history.length) {
+                    return
+                } else {
+                    msgBox.innerHTML = '';
+                    res.history.forEach(msg => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = "message-box"
 
-                    //Выравниваем по братику
-                    const isMine = Number(msg.sender_id) === Number(currentId);
+                        //Выравниваем по братику
+                        const isMine = Number(msg.sender_id) === Number(currentId);
 
-                    messageDiv.style.alignSelf = isMine ? 'flex-end' : 'flex-start';
-                    messageDiv.style.background = isMine ? 'var(--chat-mine-bg)' : 'var(--chat-other-bg)';
+                        messageDiv.style.alignSelf = isMine ? 'flex-end' : 'flex-start';
+                        messageDiv.style.background = isMine ? 'var(--chat-mine-bg)' : 'var(--chat-other-bg)';
 
-                    if (msg.type === 'image' && msg.file_path) {
-                        const url = '/' + msg.file_path;
-                        messageDiv.innerHTML = `
+                        if (msg.type === 'image' && msg.file_path) {
+                            const url = '/' + msg.file_path;
+                            messageDiv.innerHTML = `
                             <img src="${url}" alt="изображение"
                                  style="max-width:240px; max-height:240px; border-radius:6px; cursor:zoom-in; display:block;">
                             <span class="message-date"></span>
                         `;
-                        messageDiv.querySelector('img').onclick = () => window.open(url, '_blank');
-                    } else {
-                        messageDiv.innerHTML = `
+                            messageDiv.querySelector('img').onclick = () => window.open(url, '_blank');
+                        } else {
+                            messageDiv.innerHTML = `
                             <p class="message"></p>
                             <span class="message-date"></span>
                         `;
-                        messageDiv.querySelector('.message').textContent = msg.text;
-                    }
+                            messageDiv.querySelector('.message').textContent = msg.text;
+                        }
 
-                    messageDiv.querySelector('.message-date').textContent =
-                        msg.timestamp.split(' ')[1] || '';
-                    msgBox.appendChild(messageDiv);
-                });
+                        messageDiv.querySelector('.message-date').textContent = loadDate(msg.timestamp)
+                        msgBox.appendChild(messageDiv);
+                        msgCount = res.history.length
+                        msgBox.scrollTop = msgBox.scrollHeight; 
+                    });
+                }
 
-               // msgBox.scrollTop = msgBox.scrollHeight; --  сделать обработку на новые сообщения 
+               
             })
             .catch(err => {
                 const msgBox = document.getElementById('chat-messages-box');

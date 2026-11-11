@@ -13,12 +13,12 @@ from flask import jsonify
 from flask import send_from_directory
 from database import (
     connect_db, init_db, create_user, get_user_by_token, update_ip_user,
-    create_request, get_user_by_credentials, get_user_request,
+    create_request, get_user_request,
     request_switch_status, get_knowledge_solutions,
     get_users_with_active_requests, save_request_message,
     get_request_chat_history,
     get_all_request,
-    get_requests_statistics,          # ← добавить
+    get_requests_statistics,         
     clear_user_token,
 )
 from functools import wraps
@@ -26,7 +26,6 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import get_request_owner 
 from database import delete_request
-import socket
 import subprocess
 import sys
 
@@ -133,22 +132,6 @@ def clear_login_fails(ip):
 
 ## Получаем скисок пользователей и их ип
 
-def registered_devices():
-    conn = connect_db()
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT id, ip, user_name, room_num FROM accounts")
-    rows = cursor.fetchall()
-    conn.close()
-    registered_device = []
-    for row in rows:
-        registered_device.append({
-            "id": row[0],
-            "ip": row[1],
-            "user_name": row[2],
-            "room_num": row[3]
-        })
-    return registered_device
 
 def can_access_request(user, request_id):
     owner_id = get_request_owner(request_id)

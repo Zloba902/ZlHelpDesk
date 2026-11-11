@@ -86,10 +86,17 @@
     margin-bottom: 12px;
 }
 
-/* Цвет полоски зависит от статуса (атрибут data-status ставит JS) */
-.request[data-status="new"]     { border-left-color: var(--status-new-line); }
-.request[data-status="process"] { border-left-color: var(--status-process-line); }
-.request[data-status="done"]    { border-left-color: var(--status-done-line); }
+
+.request[data-status="new"]
+     { 
+        border-left-color: var(--status-new-line);
+     }
+.request[data-status="process"] {
+     border-left-color: var(--status-process-line);
+     }
+.request[data-status="done"]    {
+     border-left-color: var(--status-done-line);
+     }
 
 /* Кнопки внутри карточки меньше обычных */
 .request button {
@@ -97,6 +104,24 @@
     margin: 3px 0;
     font-size: 14px;
     border-radius: 6px;
+}
+
+.chat-table{
+ display:flex; 
+ gap:10px; 
+ justify-content: space-around;
+}
+
+#chat-input-text{
+    min-width:220px;
+
+
+}
+
+
+h-btn{
+    width: 20px;
+
 }
 
 .request .req-cancel-btn {
@@ -156,15 +181,23 @@ button {
     background-color: var(--status-new-bg);
     color: var(--status-new-text);
 }
+.status-new::after{
+    content: "(Новая)";
+}
 
 .status-process {
     background-color: var(--status-process-bg);
     color: var(--status-process-text);
 }
-
+.status-process::after{
+    content: "(В процессе)";
+}
 .status-done {
     background-color: var(--status-done-bg);
     color: var(--status-done-text);
+}
+.status-done::after{
+    content: "(Выполнена)";
 }
 
 
