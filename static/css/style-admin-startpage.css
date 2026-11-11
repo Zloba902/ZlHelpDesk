@@ -41,14 +41,6 @@
  }
 
  /* Кнопка открытия меню */
- .dropbtn {
-     padding: 8px 14px;
-     font-size: 0.9rem;
-     border: none;
-     border-radius: 4px;
-     cursor: pointer;
-     transition: background-color 0.2s;
- }
 
 
  /* Контейнер с кнопками выбора (скрыт по умолчанию) */

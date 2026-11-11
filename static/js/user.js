@@ -148,9 +148,12 @@ function createUserRequestCard(req, userId) {
     card.querySelector('.req-start-date').textContent = loadDate(req.start_date);
     card.querySelector('.safe-close-date').textContent =  loadDate(req.close_date);
 
+    
+
     const badge = card.querySelector('.status-badge');
+
     badge.className = `status-badge status-${req.status.toLowerCase()}`;
-    badge.textContent = req.status;
+    badge.textContent = statusLabels[req.status];
 
     card.querySelector('.req-chat-btn').onclick = () =>
         openTicketChat(req.id, userId, req.title);

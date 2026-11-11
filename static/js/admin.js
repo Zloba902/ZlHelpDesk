@@ -1,6 +1,7 @@
 
 let chatInterval = null
 let currentRequestsView = null;
+const statusLabels = { new: 'Новая', process: 'В процессе', done: 'Выполнена' };
 
 // Заголовок с CSRF-токеном для всех POST-запросов
 function csrfHeaders(extra = {}) {
@@ -11,7 +12,8 @@ function csrfHeaders(extra = {}) {
 // Статус выводится только через textContent, без вставки в HTML
 function fillStatus(card, status) {
     card.querySelector('.dropbtn').className = `dropbtn status-${status.toLowerCase()}`;
-    card.querySelector('.status-badge').textContent = status;
+    card.querySelector('.status-badge').textContent = statusLabels[status];
+
 }
 
 // Кнопки пользователей в правой панели админа
@@ -112,7 +114,8 @@ function createAdminRequestCard(req, currentId, showUser) {
     reqCard.querySelector('.safe-start-date').textContent = loadDate(req.start_date);
     reqCard.querySelector('.safe-close-date').textContent = loadDate(req.close_date);
     reqCard.querySelector('.safe-text').textContent = req.request_text;
-    fillStatus(reqCard, req.status);
+  
+    fillStatus(reqCard,  req.status);
     reqCard.querySelector('.chat-button').onclick = () =>
         openTicketChat(req.id, currentId, req.title);
 
@@ -241,7 +244,7 @@ function loadStatistics() {
             statusBlock.className = 'stats-block';
             statusBlock.innerHTML = '<h3>По статусам</h3>';
 
-            const statusLabels = { new: 'В обработке', process: 'В процессе', done: 'Готово' };
+            
             const statusColors = { new: 'var(--blue-500)', process: 'var(--amber-500)', done: 'var(--green-500)' };
 
             Object.entries(stats.by_status).forEach(([key, cnt]) => {
