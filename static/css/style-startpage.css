@@ -1,12 +1,12 @@
 :root {
-  --bg: var(--polar-night-1);
-  --rm: var(--snow-storm-1);
-  --wt: var(--snow-storm-3);
+  --bg: var(--bg-sunken);
+  --rm: var(--border-color);
+  --wt: var(--text-primary);
 }
 
 body {
-  background-color: var(--bg, var(--polar-night-1));
-  color: var(--snow-storm-3);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,8 +62,8 @@ input[type=password]:focus {
 button {
   font-size: 15px;
   font-family: "Tiny5", sans-serif;
-  background-color: var(--snow-storm-3); /* Заменен #ffffff */
-  color: var(--polar-night-1); /* Заменен #000000 */
+  background-color: var(--accent);
+  color: var(--text-on-accent);
   padding: 14px 20px;
   margin: 8px 0;
   border: none;
@@ -79,7 +79,7 @@ button:hover {
 /* Дополнительные стили для кнопки отмены */
 .cancelbtn {
   padding: 14px 20px;
-  background-color: var(--aurora-red); /* Заменен #f44336 */
+  background-color: var(--danger);
 }
 
 /* Добавляем обтекание и одинаковую ширину для кнопок отмены и регистрации */
@@ -104,13 +104,13 @@ button:hover {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: var(--polar-night-1); /* Заменен #050505 */
+  background-color: var(--bg-page);
   padding-top: 50px;
 }
 
 /* Модальное окно (содержимое) */
 .modal-content {
-  background-color: transparent; /* Заменен #0a020200 (прозрачный) */
+  background-color: transparent;
   margin: 5% auto 15% auto;
   border: none;
   width: 70%;
@@ -129,12 +129,12 @@ hr {
   top: 15px;
   font-size: 40px;
   font-weight: bold;
-  color: var(--snow-storm-2); /* Заменен #f1f1f1 */
+  color: var(--text-muted);
 }
 
 .close:hover,
 .close:focus {
-  color: var(--aurora-red); /* Заменен #f44336 */
+  color: var(--danger);
   cursor: pointer;
 }
 
@@ -161,7 +161,7 @@ hr {
   width: 120px;
   text-decoration: none;
   font-size: 20px;
-  color: var(--polar-night-1); /* Заменен rgb(5, 5, 5) */
+  color: var(--text-primary);
   border-radius: 0 5px 5px 0;
 }
 
@@ -172,7 +172,7 @@ hr {
 /* Ссылка "О нас": 20px от верха, зеленый фон */
 #about {
   top: 20px;
-  background-color: var(--aurora-green); /* Заменен #04AA6D */
+  background-color: var(--heading);
 }
 
 #hower1,

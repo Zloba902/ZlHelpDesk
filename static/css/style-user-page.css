@@ -1,11 +1,11 @@
 :root {
-    --bg: var(--polar-night-1);
-    --rm: var(--snow-storm-1);
-    --wt: var(--snow-storm-3);
+    --bg: var(--bg-sunken);
+    --rm: var(--border-color);
+    --wt: var(--text-primary);
 }
 
 body {
-     background-color: var(--bg-dark);
+     background-color: var(--bg-page);
      color: var(--text-primary);
      display: flex;
      height: 100vh;
@@ -58,12 +58,11 @@ button:hover {
     /* Скрыта изначально слева */
     width: 500px;
     height: 100%;
-    background: var(--polar-night-1);
-    /* Заменен #130e1a */
+    background: var(--bg-surface);
     border-right: 2px solid var(--rm);
     padding: 40px 20px;
     transition: left 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
-    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+    box-shadow: 5px 0 25px rgba(31, 41, 55, 0.12);
     display: flex;
     flex-direction: column;
     z-index: 10;
@@ -85,10 +84,8 @@ label {
 }
 
 close-btn {
-    background-color: var(--aurora-red);
-    /* Заменен #f44336 */
-    color: var(--snow-storm-3);
-    /* Заменен rgb(238, 9, 9) */
+    background-color: var(--danger);
+    color: var(--text-on-accent);
     border: none;
     padding: 10px 20px;
     cursor: pointer;
@@ -106,7 +103,7 @@ close-btn {
 
     border: 2px solid var(--rm);
     border-top: none;
-    background: var(--polar-night-1);
+    background: var(--bg-surface);
     top: -100%;
     left: 1000px;
 
@@ -128,7 +125,7 @@ close-btn {
 
  .right-sidebar {
      width: 340px;
-     background-color: var(--panel-bg);
+     background-color: var(--bg-surface);
      border-left: 1px solid var(--border-color);
      display: flex;
      flex-direction: column;
@@ -137,8 +134,8 @@ close-btn {
  .left-sidebar {
      width: 500px;
      position: relative;
-     background-color: var(--panel-bg);
-     border-right: 1px solid var(--border-color);
+     background: var(--sidebar-bg);
+     color: var(--sidebar-text);
      display: flex;
      flex-direction: column;
      padding: 20px;

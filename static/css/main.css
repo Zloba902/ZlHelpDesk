@@ -1,56 +1,65 @@
 :root {
-    /* --- Polar Night (Темные фоны и границы) --- */
-    --polar-night-1: #2e3440;
-    --polar-night-2: #3b4252;
-    --polar-night-3: #434c5e;
-    --polar-night-4: #4c566a;
+    /* --- Базовые цвета палитры --- */
+    --blue-600: #2f62d6;
+    --blue-500: #3b74f0;
+    --blue-100: #e4ecfd;
+    --blue-50: #eef3fb;
+    --indigo-600: #4b44c8;
+    --teal-600: #0f8f7c;
+    --amber-600: #a35f00;
+    --amber-500: #f0a830;
+    --amber-100: #fff0d4;
+    --green-600: #1f8a52;
+    --green-500: #2fb36d;
+    --green-100: #daf3e5;
+    --red-600: #d64545;
+    --violet-500: #7c5cd6;
+    --gray-900: #1f2937;
+    --gray-600: #5b6478;
+    --gray-300: #d5dbe6;
+    --gray-100: #eef1f7;
+    --gray-50: #f6f8fc;
+    --white: #ffffff;
 
-    /* --- Snow Storm (Светлый текст и фоны) --- */
-    --snow-storm-1: #d8dee9;
-    --snow-storm-2: #e5e9f0;
-    --snow-storm-3: #eceff4;
+    /* --- Роли: в стилях используются только они --- */
+    --bg-page: var(--blue-50);       /* фон страницы, слегка голубой */
+    --bg-surface: var(--white);      /* карточки и панели */
+    --bg-sunken: var(--gray-100);    /* поля ввода, окно чата */
+    --border-color: var(--gray-300);
+    --text-primary: var(--gray-900);
+    --text-muted: var(--gray-600);
+    --text-on-accent: var(--white);  /* текст на цветных кнопках */
+    --accent: var(--blue-500);       /* кнопки, активные элементы */
+    --accent-hover: var(--blue-600);
+    --accent-soft: var(--blue-100);
+    --heading: var(--teal-600);      /* заголовки карточек */
+    --danger: var(--red-600);
+    --shadow: 0 4px 14px rgba(31, 41, 55, 0.08);
 
-    /* --- Frost (Акценты, ссылки, кнопки) --- */
-    --frost-1: #8fbcbb;
-    --frost-2: #88c0d0;
-    --frost-3: #81a1c1;
-    --frost-4: #5e81ac;
+    /* --- Левая панель --- */
+    --sidebar-bg: linear-gradient(180deg, var(--blue-600), var(--indigo-600));
+    --sidebar-text: var(--white);
+    --sidebar-btn-bg: rgba(255, 255, 255, 0.14);
+    --sidebar-btn-hover: rgba(255, 255, 255, 0.26);
 
-    /* --- Aurora (Статусы и ошибки) --- */
-    --aurora-red: #bf616a;
-    --aurora-orange: #d08770;
-    --aurora-yellow: #ebcb8b;
-    --aurora-green: #a3be8c;
-    --aurora-purple: #b48ead;
+    /* --- Статусы заявок --- */
+    --status-new-bg: var(--blue-100);
+    --status-new-text: var(--blue-600);
 
-    /* --- Семантические переменные (Маппинг) --- */
+    --status-process-bg: var(--amber-100);
+    --status-process-text: var(--amber-600);
 
-    /* Фоны */
-    --bg-dark: var(--polar-night-1);
-    --panel-bg: var(--polar-night-2);
-    --border-color: var(--polar-night-3);
-    --border-light: var(--polar-night-4);
-    --border-subtle: var(--polar-night-3);
+    --status-done-bg: var(--green-100);
+    --status-done-text: var(--green-600);
 
+    /* цветная полоска слева на карточке заявки */
+    --status-new-line: var(--blue-500);
+    --status-process-line: var(--amber-500);
+    --status-done-line: var(--green-500);
 
-    /* Текст */
-    --text-primary: var(--snow-storm-3);
-    --text-secondary: var(--snow-storm-2);
-    --text-muted: var(--snow-storm-1);
-
-    /* Акценты */
-    --accent-alt: var(--frost-2);
-    --cyan-accent: var(--frost-2);
-
-    /* Статусы (на основе Aurora) */
-    --status-new-bg: var(--aurora-purple);
-    --status-new-text: var(--snow-storm-3);
-
-    --status-process-bg: var(--aurora-yellow);
-    --status-process-text: var(--polar-night-1);
-
-    --status-done-bg: var(--aurora-green);
-    --status-done-text: var(--polar-night-1);
+    /* --- Чат --- */
+    --chat-mine-bg: var(--accent-soft);
+    --chat-other-bg: var(--white);
 }
 
  #requests-list {
@@ -64,30 +73,51 @@
  }
 
 .request {
-    background-color: var(--polar-night-2);
-    border: 1px solid var(--polar-night-4);
-    border-radius: 8px;
-    padding: 20px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-left: 5px solid var(--border-color);
+    box-shadow: var(--shadow);
+    border-radius: 10px;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
+}
+
+/* Цвет полоски зависит от статуса (атрибут data-status ставит JS) */
+.request[data-status="new"]     { border-left-color: var(--status-new-line); }
+.request[data-status="process"] { border-left-color: var(--status-process-line); }
+.request[data-status="done"]    { border-left-color: var(--status-done-line); }
+
+/* Кнопки внутри карточки меньше обычных */
+.request button {
+    padding: 7px 12px;
+    margin: 3px 0;
+    font-size: 14px;
+    border-radius: 6px;
+}
+
+.request .req-cancel-btn {
+    background-color: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
 }
 
 .request h4,
 .solotion h4 {
     margin: 0;
-    font-size: 20px;
-    color: var(--aurora-green);
-    border-bottom: 1px solid var(--border-subtle);
-    padding-bottom: 8px;
+    font-size: 17px;
+    color: var(--heading);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 6px;
 }
 
 .request p,
 .solotion p {
     margin: 0;
-    font-size: 20px;
+    font-size: 15px;
     color: var(--text-muted);
     line-height: 1.4;
 }
@@ -95,16 +125,26 @@
 button {
     font-size: 15px;
     font-family: "MyCustomFont", sans-serif;
-    background-color: var(--snow-storm-3);
-    /* Заменен #ffffff */
-    color: var(--polar-night-1);
-    /* Заменен #000000 */
+    background-color: var(--accent);
+    color: var(--text-on-accent);
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
     cursor: pointer;
     width: 100%;
     opacity: 0.9;
+}
+
+/* Кнопки на цветной левой панели: полупрозрачные белые */
+.left-sidebar button {
+    background-color: var(--sidebar-btn-bg);
+    color: var(--sidebar-text);
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.left-sidebar button:hover {
+    background-color: var(--sidebar-btn-hover);
 }
 
 .solotion {
@@ -130,7 +170,7 @@ button {
 
 
 .chat-button {
-    background-color: var(--aurora-green);
+    background-color: var(--heading);
     padding: 5px;
 }
 
@@ -138,13 +178,13 @@ button {
 .chat-window .title {
     padding-left: 10px;
     font-size: 20px;
-    color: var(--aurora-orange);
+    color: var(--accent);
     margin-bottom: 15px
 }
 
 .chat-window .chat-header {
     font-size: 23px;
-    color: var(--aurora-purple);
+    color: var(--heading);
     margin-bottom: 10px;
     padding: 7px;
 }
@@ -154,7 +194,7 @@ button {
     min-height: 250px;
     max-height: 400px;
     overflow-y: auto;
-    background: var(--polar-night-3);
+    background: var(--bg-sunken);
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 15px;
@@ -171,14 +211,14 @@ button {
 }
 
 .message {
-    color: var(--polar-night-1);
+    color: var(--text-primary);
     margin: 0;
     font-size: 16px;
 }
 
 .message-date {
     font-size: 9px;
-    color: var(--aurora-red);
+    color: var(--text-muted);
     display: block;
     text-align: right;
     margin-top: 3px;
@@ -194,7 +234,7 @@ button {
 
  .right-sidebar {
      width: 340px;
-     background-color: var(--panel-bg);
+     background-color: var(--bg-surface);
      border-left: 1px solid var(--border-color);
      display: flex;
      flex-direction: column;
@@ -203,8 +243,8 @@ button {
  .left-sidebar {
      width: 500px;
      position: relative;
-     background-color: var(--panel-bg);
-     border-right: 1px solid var(--border-color);
+     background: var(--sidebar-bg);
+     color: var(--sidebar-text);
      display: flex;
      flex-direction: column;
      padding: 20px;

@@ -128,6 +128,7 @@ function loadUserRequests() {
 function createUserRequestCard(req, userId) {
     const card = document.createElement('div');
     card.className = 'request';
+    card.dataset.status = req.status;   // для цветной полоски в CSS
 
     // В разметке только пустые элементы, данные вставляются через textContent
     card.innerHTML = `
@@ -157,7 +158,7 @@ function createUserRequestCard(req, userId) {
     // Отменить можно только незакрытую заявку
     if (['new', 'process'].includes(req.status)) {
         const cancelBtn = document.createElement('button');
-        cancelBtn.className = 'sidebar-btn';
+        cancelBtn.className = 'sidebar-btn req-cancel-btn';
         cancelBtn.style.marginTop = '10px';
         cancelBtn.textContent = '✖ Отменить заявку';
         cancelBtn.onclick = () => cancelRequest(req.id);

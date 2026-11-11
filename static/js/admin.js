@@ -77,6 +77,7 @@ function loadDate(dateDB){
 function createAdminRequestCard(req, currentId, showUser) {
     const reqCard = document.createElement('div');
     reqCard.className = 'request';
+    reqCard.dataset.status = req.status;   // для цветной полоски в CSS
 
     // В разметке только пустые элементы, данные вставляются через textContent
     reqCard.innerHTML = `
@@ -241,7 +242,7 @@ function loadStatistics() {
             statusBlock.innerHTML = '<h3>По статусам</h3>';
 
             const statusLabels = { new: 'В обработке', process: 'В процессе', done: 'Готово' };
-            const statusColors = { new: '#e2a13c', process: '#4a90e2', done: '#4caf50' };
+            const statusColors = { new: 'var(--blue-500)', process: 'var(--amber-500)', done: 'var(--green-500)' };
 
             Object.entries(stats.by_status).forEach(([key, cnt]) => {
                 const pct = stats.total ? Math.round((cnt / stats.total) * 100) : 0;
@@ -251,7 +252,7 @@ function loadStatistics() {
                     <span class="bar-label"></span>
                     <div class="bar-track">
                         <div class="bar-fill"
-                             style="width:${pct}%; background:${statusColors[key] || '#999'};">
+                             style="width:${pct}%; background:${statusColors[key] || 'var(--text-muted)'};">
                         </div>
                     </div>
                     <span class="bar-count">${cnt}</span>
@@ -275,7 +276,7 @@ function loadStatistics() {
                     row.innerHTML = `
                         <span class="bar-label"></span>
                         <div class="bar-track">
-                            <div class="bar-fill" style="width:${pct}%; background:#7e57c2;"></div>
+                            <div class="bar-fill" style="width:${pct}%; background:var(--violet-500);"></div>
                         </div>
                         <span class="bar-count">${c.count}</span>
                     `;
@@ -301,7 +302,7 @@ function loadStatistics() {
                     row.innerHTML = `
                         <span class="bar-label"></span>
                         <div class="bar-track">
-                            <div class="bar-fill" style="width:${pct}%; background:#26a69a;"></div>
+                            <div class="bar-fill" style="width:${pct}%; background:var(--heading);"></div>
                         </div>
                         <span class="bar-count" title="активных: ${u.active}, выполнено: ${u.done}">
                             ${u.total}
@@ -392,7 +393,7 @@ function openTicketChat(requestId, currentId, requestTitle) {
                     const isMine = Number(msg.sender_id) === Number(currentId);
 
                     messageDiv.style.alignSelf = isMine ? 'flex-end' : 'flex-start';
-                    messageDiv.style.background = isMine ? 'var(--frost-1)' : 'var(--frost-4)';
+                    messageDiv.style.background = isMine ? 'var(--chat-mine-bg)' : 'var(--chat-other-bg)';
 
                     if (msg.type === 'image' && msg.file_path) {
                         const url = '/' + msg.file_path;

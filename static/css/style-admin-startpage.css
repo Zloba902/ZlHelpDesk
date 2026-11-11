@@ -1,7 +1,7 @@
 
 
  body {
-     background-color: var(--bg-dark);
+     background-color: var(--bg-page);
      color: var(--text-primary);
      display: flex;
      height: 100vh;
@@ -13,7 +13,7 @@
 
 .code {
 
-    color: var(--aurora-red);
+    color: var(--text-muted);
 }
 
  * {
@@ -26,8 +26,8 @@
 
  .left-sidebar {
      width: 280px;
-     background-color: var(--panel-bg);
-     border-right: 1px solid var(--border-color);
+     background: var(--sidebar-bg);
+     color: var(--sidebar-text);
      display: flex;
      flex-direction: column;
      padding: 20px;
@@ -55,7 +55,7 @@
  .dropdown-content {
      display: none;
      position: absolute;
-     background-color: var(--polar-night-3);
+     background-color: var(--bg-surface);
      min-width: 140px;
      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
      border-radius: 4px;
@@ -71,7 +71,7 @@
  /* Кнопки внутри выпадающего списка */
  .dropdown-content button {
      color: var(--text-primary);
-     background-color: black;
+     background-color: var(--bg-surface);
      padding: 10px 14px;
      text-align: left;
      width: 100%;
@@ -82,8 +82,8 @@
  }
 
  .dropdown-content button:hover {
-    background-color: var(--polar-night-1); /* Заменен #000000 */
-    color: var(--aurora-purple); /* Заменен #8100dd */
+    background-color: var(--accent-soft);
+    color: var(--accent-hover);
 }
 
 
@@ -100,8 +100,8 @@
  }
 
 .left-sidebar a:hover {
-    background-color: var(--polar-night-3); /* Заменен #1e293b */
-    color: var(--cyan-accent);
+    background-color: var(--bg-sunken);
+    color: var(--accent);
 }
 
  /* 2. ЦЕНТРАЛЬНАЯ ПАНЕЛЬ: Приветствие и статистика */
@@ -115,7 +115,7 @@
 
  /* Таблица-карточка статистики из вашего наброска */
  .stats-table-card {
-     background-color: var(--panel-bg);
+     background-color: var(--bg-surface);
      border: 1px solid var(--border-color);
      border-radius: 12px;
      padding: 25px;
@@ -141,7 +141,7 @@
 
  .stat-label {
      font-size: 13px;
-     color: var(--text-secondary);
+     color: var(--text-muted);
      font-weight: 500;
      margin-bottom: 12px;
      line-height: 1.3;
@@ -152,13 +152,13 @@
  .stat-value {
      font-size: 24px;
      font-weight: bold;
-     color: var(--cyan-accent);
+     color: var(--accent);
  }
 
  /* 3. ПРАВАЯ ПАНЕЛЬ: Заявки, список ПК и чат */
  .right-sidebar {
      width: 340px;
-     background-color: var(--panel-bg);
+     background-color: var(--bg-surface);
      border-left: 1px solid var(--border-color);
      display: flex;
      flex-direction: column;
@@ -182,7 +182,7 @@
      padding: 15px;
      background: none;
      border: none;
-     color: var(--text-secondary);
+     color: var(--text-muted);
      font-weight: 600;
      cursor: pointer;
      font-size: 14px;
@@ -190,9 +190,9 @@
  }
 
  .tab-btn.active {
-     color: var(--cyan-accent);
-     border-bottom: 2px solid var(--cyan-accent);
-     background-color: rgba(56, 189, 248, 0.05);
+     color: var(--accent);
+     border-bottom: 2px solid var(--accent);
+     background-color: var(--accent-soft);
  }
 
  /* Контент правой панели */
@@ -204,21 +204,21 @@
 
  .section-subtitle {
      font-size: 12px;
-     color: var(--text-secondary);
+     color: var(--text-muted);
      margin-bottom: 15px;
      text-transform: uppercase;
      letter-spacing: 0.5px;
  }
 
  .pc-item {
-     background-color: var(--polar-night-3);
+     background-color: var(--bg-sunken);
      color: var(--text-primary);
      padding: 12px;
      margin: 10px 0px 0px 0px;
      display: flex;
      flex-direction: column;
      align-items: center;
-     border-left: 3px solid var(--cyan-accent);
+     border-left: 3px solid var(--accent);
  }
 
   .pc-item .badge{
@@ -228,8 +228,8 @@
   padding: 5px 10px;
   margin-top: -25px;
   border-radius: 100%;
-  background: var(--aurora-red);
-  color: var(--snow-storm-1);
+  background: var(--danger);
+  color: var(--text-on-accent);
 }
 
  .pc-info p {
@@ -238,8 +238,8 @@
  }
 
  .badge-msg {
-     background-color: var(--aurora-red);
-     color: var(--snow-storm-3); 
+     background-color: var(--danger);
+     color: var(--text-on-accent);
      font-size: 11px;
      padding: 2px 7px;
      border-radius: 10px;
@@ -249,10 +249,8 @@
 
 
  .tab-btn.active {
-     color: var(--aurora-purple);
-     /* Голубой цвет как на скрине */
-     border-bottom: 2px solid #ff00ea;
-     /* Голубая полоска снизу */
+     color: var(--accent);
+     border-bottom: 2px solid var(--accent);
  }
 
  /* Скрываем все табы по умолчанию */
@@ -279,13 +277,13 @@
     margin-bottom: 20px;
 }
 .stat-card {
-    background: var(--frost-4, #f5f5f5);
+    background: var(--accent-soft);
     border-radius: 8px;
     padding: 14px;
     text-align: center;
 }
-.stat-card.stat-active { background: #fff4e0; }
-.stat-card.stat-done   { background: #e8f5e9; }
+.stat-card.stat-active { background: var(--status-process-bg); }
+.stat-card.stat-done   { background: var(--status-done-bg); }
 .stat-value {
     font-size: 26px;
     font-weight: 700;
@@ -293,14 +291,15 @@
 }
 .stat-label {
     font-size: 12px;
-    color: #666;
+    color: var(--text-muted);
     margin-top: 4px;
 }
 
 /* ---- Блоки с полосками ---- */
 .stats-block {
-    background: #fff;
-    border: 1px solid #eee;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
     border-radius: 8px;
     padding: 14px;
     margin-bottom: 14px;
@@ -308,7 +307,7 @@
 .stats-block h3 {
     margin: 0 0 10px;
     font-size: 14px;
-    color: #333;
+    color: var(--text-primary);
 }
 .bar-row {
     display: flex;
@@ -326,7 +325,7 @@
 .bar-track {
     flex: 1;
     height: 10px;
-    background: #eee;
+    background: var(--bg-sunken);
     border-radius: 6px;
     overflow: hidden;
 }
