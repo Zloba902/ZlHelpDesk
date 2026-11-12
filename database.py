@@ -56,6 +56,26 @@ def get_user_by_token(token):
     return user
 
 
+## Есть ли в базе хотя бы один администратор
+def admin_exists():
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute("SELECT 1 FROM accounts WHERE user_role = 'admin' LIMIT 1")
+    row = cur.fetchone()
+    con.close()
+    return row is not None
+
+
+## Занят ли логин
+def login_exists(login):
+    con = connect_db()
+    cur = con.cursor()
+    cur.execute('SELECT 1 FROM accounts WHERE login = ?', (login,))
+    row = cur.fetchone()
+    con.close()
+    return row is not None
+
+
 
 def update_ip_user(token, new_ip):
     con = connect_db()
@@ -360,14 +380,55 @@ def get_requests_statistics():
     for s in ('new', 'process', 'done'):
         by_status.setdefault(s, 0)
 
-    # --- 3. Разбивка по категориям ---
+    # --- 3. Разбивка по категориям (None = без темы, подпись делает фронт) ---
     cur.execute("""
-        SELECT COALESCE(category, 'без категории') AS cat, COUNT(*) AS cnt
+        SELECT category, COUNT(*) AS cnt
         FROM requests
-        GROUP BY cat
+        GROUP BY category
         ORDER BY cnt DESC
     """)
     by_category = [{"category": r[0], "count": r[1]} for r in cur.fetchall()]
+
+    # --- Динамика: сегодня и вчера по местному времени сервера ---
+    # Даты в базе хранятся в UTC, поэтому переводим их через 'localtime'
+    cur.execute("""
+        SELECT
+            SUM(CASE WHEN date(start_date, 'localtime') = date('now', 'localtime')
+                     THEN 1 ELSE 0 END),
+            SUM(CASE WHEN date(start_date, 'localtime') = date('now', 'localtime', '-1 day')
+                     THEN 1 ELSE 0 END),
+            SUM(CASE WHEN status = 'done'
+                      AND date(close_date, 'localtime') = date('now', 'localtime')
+                     THEN 1 ELSE 0 END),
+            SUM(CASE WHEN status = 'done'
+                      AND date(close_date, 'localtime') = date('now', 'localtime', '-1 day')
+                     THEN 1 ELSE 0 END)
+        FROM requests
+    """)
+    # SUM по пустой таблице возвращает NULL, поэтому заменяем его на 0
+    created_today, created_yesterday, closed_today, closed_yesterday = \
+        [value or 0 for value in cur.fetchone()]
+
+    # --- Среднее время решения в часах (выполненные заявки с обеими датами) ---
+    cur.execute("""
+        SELECT AVG((julianday(close_date) - julianday(start_date)) * 24)
+        FROM requests
+        WHERE status = 'done' AND close_date IS NOT NULL AND start_date IS NOT NULL
+    """)
+    avg_hours = cur.fetchone()[0]
+    avg_resolution_hours = round(avg_hours, 2) if avg_hours is not None else None
+
+    # --- Самая частая тема у каждого пользователя ---
+    cur.execute("""
+        SELECT user_id, category, COUNT(*) AS cnt
+        FROM requests
+        GROUP BY user_id, category
+        ORDER BY user_id, cnt DESC
+    """)
+    top_category = {}
+    for user_id, category, cnt in cur.fetchall():
+        # строки отсортированы по убыванию, поэтому первая и есть самая частая
+        top_category.setdefault(user_id, category)
 
     # --- 4. По пользователям (топ всех, фронт обрежет если надо) ---
     cur.execute("""
@@ -393,6 +454,7 @@ def get_requests_statistics():
             "total":     r[3],
             "active":    r[4],
             "done":      r[5],
+            "top_category": top_category.get(r[0]),
         }
         for r in cur.fetchall()
     ]
@@ -407,4 +469,9 @@ def get_requests_statistics():
         "by_status":     by_status,
         "by_category":   by_category,
         "by_user":       by_user,
+        "created_today":     created_today,
+        "created_yesterday": created_yesterday,
+        "closed_today":      closed_today,
+        "closed_yesterday":  closed_yesterday,
+        "avg_resolution_hours": avg_resolution_hours,
     }

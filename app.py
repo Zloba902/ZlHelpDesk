@@ -5,6 +5,7 @@ import time
 import hmac
 import hashlib
 import getpass
+import secrets
 import threading
 import multiprocessing
 from flask import Flask, request, make_response, redirect, url_for
@@ -20,6 +21,8 @@ from database import (
     get_all_request,
     get_requests_statistics,         
     clear_user_token,
+    admin_exists,
+    login_exists,
 )
 from functools import wraps
 from werkzeug.utils import secure_filename
@@ -131,8 +134,6 @@ def clear_login_fails(ip):
 
 
 ## Получаем скисок пользователей и их ип
-
-
 def can_access_request(user, request_id):
     owner_id = get_request_owner(request_id)
     if owner_id is None:
@@ -140,6 +141,7 @@ def can_access_request(user, request_id):
     if user[4] == "admin":
         return True
     return user[0] == owner_id 
+
 
 def login_required(role=None):
     def decorator(f):
@@ -157,7 +159,6 @@ def login_required(role=None):
     return decorator
 
 
-## начальная страница что перекидыват пользователя дальше
 @app.route("/")
 def home():
     user_ip = request.remote_addr
@@ -170,7 +171,6 @@ def home():
     return render_template("register.html", client_ip=user_ip)
 
 
-## Обработка обращения пользователя
 @app.route("/send_request", methods=["POST"])
 def send_request():
     user_token = request.cookies.get("user_token")
@@ -199,7 +199,6 @@ def send_request():
 
 
 ## РОУТЫ
-
 ## вывод заявок пользоывтелей
 @app.route("/api/requests")
 @app.route("/api/requests/<int:user_id>")
@@ -215,10 +214,12 @@ def get_requests_api(user, user_id=None):
         return jsonify({"error": "forbidden"}), 403
     return jsonify(get_user_request(user_id))
 
+
 @app.route("/api/requests/statistics")
 @login_required(role="admin")
 def get_statistics_api(user):
     return jsonify(get_requests_statistics())
+
 
 ## смена статуса заявки
 @app.route("/api/request_switch/<int:request_id>/<new_status>", methods=["POST"])
@@ -260,6 +261,7 @@ def cancel_request(request_id, user):
     delete_request(request_id)
     return jsonify({"status": "success", "message": "Заявка удалена"})
 
+
 ## отправка сообщения
 @app.route("/api/send_chat_message", methods=["POST"])
 @login_required()               # ???
@@ -300,7 +302,7 @@ def send_chat_message(user):
     save_request_message(request_id, id_sender, id_reciev, message_text)
     return jsonify({"status": "success"})
 
-### -- ТЕСТОВОЕ -----
+
 
 @app.route("/api/upload_chat_file/<int:request_id>", methods=["POST"])
 @login_required()
@@ -542,11 +544,38 @@ def create_admin_cli():
     print(f"Администратор {login} создан")
 
 
+def ensure_default_admin():
+    """При первом запуске, если в базе нет ни одного админа, создаёт его
+    со случайным паролем и печатает логин и пароль в консоль сервера."""
+    if admin_exists():
+        return
+
+    # Если логин admin уже занят обычным пользователем, берём admin2, admin3...
+    login = "admin"
+    suffix = 1
+    while login_exists(login):
+        suffix += 1
+        login = f"admin{suffix}"
+
+    password = secrets.token_urlsafe(9)   # 12 случайных символов
+    create_user(login, str(uuid.uuid4()), "", "admin", "Администратор",
+                generate_password_hash(password), "")
+
+    print("=" * 50)
+    print(" Создан администратор по умолчанию")
+    print(f" логин:  {login}")
+    print(f" пароль: {password}")
+    print(" Сохраните пароль: больше он показан не будет.")
+    print("=" * 50)
+
+
 if __name__ == "__main__":
     multiprocessing.freeze_support()
     if sys.argv[1:] == ["create-admin"]:
         create_admin_cli()
         sys.exit(0)
+
+    ensure_default_admin()
 
     local_ip = get_wifi_ip()
     scheme = "https" if USE_HTTPS else "http"

@@ -57,6 +57,12 @@
     --status-process-line: var(--amber-500);
     --status-done-line: var(--green-500);
 
+    /* --- Диаграммы: цвета тем (проверены на различимость при дальтонизме) --- */
+    --chart-1: #6250d6;     /* фиолетовый */
+    --chart-2: #eb6834;     /* оранжевый */
+    --chart-3: #1baf7a;     /* бирюзовый */
+    --chart-other: #9aa3b5; /* серый: без темы и прочее */
+
     /* --- Чат --- */
     --chat-mine-bg: var(--accent-soft);
     --chat-other-bg: var(--white);
