@@ -56,7 +56,6 @@ def get_user_by_token(token):
     return user
 
 
-## Есть ли в базе хотя бы один администратор
 def admin_exists():
     con = connect_db()
     cur = con.cursor()

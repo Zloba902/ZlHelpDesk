@@ -77,8 +77,8 @@ def set_auth_cookie(response, user_token):
     response.set_cookie(
         "user_token", user_token,
         max_age=COOKIE_MAX_AGE,
-        httponly=True,        # JavaScript не может прочитать токен
-        samesite="Lax",       # cookie не уходит с POST-запросами с чужих сайтов
+        httponly=True,        
+        samesite="Lax",       
         secure=USE_HTTPS,
     )
 
@@ -94,7 +94,7 @@ def csrf_protect():
         return None
     user_token = request.cookies.get("user_token")
     if not user_token:
-        return None           # без сессии запрос отклонит сам обработчик
+        return None           
     sent = request.headers.get("X-CSRF-Token") or request.form.get("csrf_token", "")
     if not hmac.compare_digest(sent.encode(), csrf_token_for(user_token).encode()):
         return jsonify({"error": "bad csrf token"}), 403
@@ -108,7 +108,6 @@ def inject_csrf_token():
 
 
 def recent_login_fails(ip):
-    # Вызывать только под login_fails_lock
     now = time.time()
     fails = [t for t in login_fails.get(ip, []) if now - t < LOGIN_FAIL_WINDOW]
     if fails:
@@ -133,7 +132,6 @@ def clear_login_fails(ip):
         login_fails.pop(ip, None)
 
 
-## Получаем скисок пользователей и их ип
 def can_access_request(user, request_id):
     owner_id = get_request_owner(request_id)
     if owner_id is None:
@@ -151,9 +149,8 @@ def login_required(role=None):
             user = get_user_by_token(token) if token else None
             if not user:
                 return jsonify({"error": "unauthorized"}), 401
-            if role and user[4] != role:   # user[4] — колонка user_role
+            if role and user[4] != role:   
                 return jsonify({"error": "forbidden"}), 403
-            # прокидываем пользователя в функцию, чтобы не доставать повторно
             return f(*args, user=user, **kwargs)
         return wrapper
     return decorator
@@ -205,11 +202,11 @@ def send_request():
 @login_required()
 def get_requests_api(user, user_id=None):
     if user_id is None:
-        # Все заявки — только админ
+
         if user[4] != "admin":
             return jsonify({"error": "forbidden"}), 403
         return jsonify(get_all_request())
-    # Заявки конкретного пользователя
+  
     if user[4] != "admin" and user[0] != user_id:
         return jsonify({"error": "forbidden"}), 403
     return jsonify(get_user_request(user_id))
@@ -390,7 +387,6 @@ def check_password(password, field_size):
 
 @app.route("/register", methods=["POST"])
 def register_user():
-
     login = request.form.get("login")
     login, error = check_field(login, 30, "login")
     if error:
@@ -408,7 +404,7 @@ def register_user():
 
     user_ip = request.remote_addr
     user_token = str(uuid.uuid4())
-    user_role = "user"   # админы создаются только командой create-admin
+    user_role = "user"   
     password = request.form.get("password")
     password, error = check_password(password, 8)
     if error:
@@ -416,7 +412,6 @@ def register_user():
 
     password_hash = generate_password_hash(password)
 
-    
     con = connect_db()
     cur = con.cursor()
     cur.execute("SELECT id FROM accounts WHERE login = ?", (login,))
@@ -447,7 +442,7 @@ def login_user():
     user = cur.fetchone()
     con.close()
 
-    if not user or not check_password_hash(user[6], password or ""):  # user[6] = password
+    if not user or not check_password_hash(user[6], password or ""):
         register_login_fail(user_ip)
         return make_response("Неправильный логин или пароль", 401)
 
@@ -501,7 +496,6 @@ def user_panel():
     update_ip_user(user_token, user_ip)
 
     user_id = user[0]
-    # Заявки загружает user.js через /api/requests/<user_id>
     return render_template("start_page_user.html", user_id = user_id)
 
 
@@ -525,7 +519,6 @@ def get_wifi_ip():
     return "127.0.0.1"
 
 def create_admin_cli():
-    """Создаёт администратора из консоли: python app.py create-admin"""
     login = input("Логин: ").strip()
     name = input("Имя: ").strip()
     password = getpass.getpass("Пароль: ")
@@ -545,19 +538,16 @@ def create_admin_cli():
 
 
 def ensure_default_admin():
-    """При первом запуске, если в базе нет ни одного админа, создаёт его
-    со случайным паролем и печатает логин и пароль в консоль сервера."""
     if admin_exists():
         return
 
-    # Если логин admin уже занят обычным пользователем, берём admin2, admin3...
     login = "admin"
     suffix = 1
     while login_exists(login):
         suffix += 1
         login = f"admin{suffix}"
 
-    password = secrets.token_urlsafe(9)   # 12 случайных символов
+    password = secrets.token_urlsafe(9)
     create_user(login, str(uuid.uuid4()), "", "admin", "Администратор",
                 generate_password_hash(password), "")
 
